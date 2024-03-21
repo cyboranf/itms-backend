@@ -1,6 +1,6 @@
 package com.pink.itms.model;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -29,11 +29,11 @@ public class Task {
     private LocalDateTime endDate;
     @ManyToMany(mappedBy = "tasks")
     private Set<User> users;
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "task_product", joinColumns = @JoinColumn(name = "task_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id"))
     private Set<Product> products;
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "task_warehouse", joinColumns = @JoinColumn(name = "task_id"),
             inverseJoinColumns = @JoinColumn(name = "warehouse_id"))
     private Set<Warehouse> warehouses;

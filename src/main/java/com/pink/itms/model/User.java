@@ -1,6 +1,6 @@
 package com.pink.itms.model;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Data;
 
 import java.util.HashSet;
@@ -25,11 +25,11 @@ public class User {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "user_task", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "task_id"))
     private Set<Task> tasks = new HashSet<>();
