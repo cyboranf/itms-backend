@@ -20,4 +20,7 @@ public class Product {
     private double weight;
     @ManyToMany(mappedBy = "products")
     private Set<Task> tasks;
+    @OneToMany(mappedBy = "product")
+    private Set<Warehouse> warehouses; // Set of products in the warehouse
+
 }

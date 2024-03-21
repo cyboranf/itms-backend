@@ -1,7 +1,10 @@
 package com.pink.itms.model;
 
 import javax.persistence.*;
+
 import lombok.Data;
+
+import java.util.Set;
 
 @Entity
 @Table(name = "warehouse")
@@ -20,4 +23,7 @@ public class Warehouse {
     private String spaceWidth;
     @Column(name = "space_length")
     private String spaceLength;
+    @ManyToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "product_id")
+    private Product product;
 }
