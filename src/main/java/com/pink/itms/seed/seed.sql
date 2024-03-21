@@ -3,34 +3,513 @@ CREATE DATABASE IF NOT EXISTS itms_database;
 USE itms_database;
 
 CREATE TABLE IF NOT EXISTS role (
-  `id` bigint(20) NOT NULL PRIMARY KEY,
-  `name` varchar(255) NOT NULL
+  id bigint(20) NOT NULL PRIMARY KEY,
+  name varchar(255) NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS users (
+  id bigint(20) NOT NULL PRIMARY KEY,
+  user_name text NOT NULL,
+  password text NOT NULL,
+  name text NOT NULL,
+  last_name text NOT NULL,
+  pesel text NOT NULL,
+  email text NOT NULL,
+  phone_number text NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS user_role (
+  user_id bigint(20) NOT NULL,
+  role_id bigint(20) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS type (
+  id bigint NOT NULL PRIMARY KEY,
+  name varchar(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS task (
+  id bigint(20) NOT NULL PRIMARY KEY,
+  name text NOT NULL,
+  description text NOT NULL,
+  state int(11) NOT NULL,
+  priority int(11) NOT NULL,
+  type_id tinyint(4) NOT NULL,
+  creation_date datetime NOT NULL,
+  start_date datetime NOT NULL,
+  end_date datetime NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS user_task (
+  task_id bigint NOT NULL,
+  user_id bigint NOT NULL
+ );
+
+CREATE TABLE IF NOT EXISTS product (
+    id bigint(20) NOT NULL PRIMARY KEY,
+    name varchar(255) NOT NULL,
+    code varchar(255) NOT NULL,
+    width double NOT NULL,
+    height double NOT NULL,
+    length double NOT NULL,
+    weight double NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS warehouse (
+  id bigint(20) NOT NULL PRIMARY KEY,
+  building varchar(255) NOT NULL,
+  zone varchar(255) NOT NULL,
+  space_id bigint NOT NULL,
+  space_height double DEFAULT NULL,
+  space_width double DEFAULT NULL,
+  space_length double DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS task_product (
+  task_id bigint(20) NOT NULL,
+  product_id bigint(20) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS task_warehouse (
+  warehouse_id bigint(20) NOT NULL,
+  task_id bigint(20) NOT NULL
+);
+
+
+DELETE FROM user_role;
+DELETE FROM user_task;
+DELETE FROM task_product;
+DELETE FROM task_warehouse;
 DELETE FROM role;
+DELETE FROM users;
+DELETE FROM task;
+DELETE FROM type;
+DELETE FROM product;
+DELETE FROM warehouse;
 
+
+ALTER TABLE user_role AUTO_INCREMENT = 0;
 ALTER TABLE role AUTO_INCREMENT = 0;
+ALTER TABLE users AUTO_INCREMENT = 0;
+ALTER TABLE type AUTO_INCREMENT = 0;
+ALTER TABLE task AUTO_INCREMENT = 0;
+ALTER TABLE user_task AUTO_INCREMENT = 0;
+ALTER TABLE product AUTO_INCREMENT = 0;
+ALTER TABLE warehouse AUTO_INCREMENT = 0;
+ALTER TABLE task_product AUTO_INCREMENT = 0;
+ALTER TABLE task_warehouse AUTO_INCREMENT = 0;
 
-INSERT INTO role (`id`, `name`) VALUES
+
+INSERT INTO role (id, name) VALUES
 (1, 'Admin'),
 (2, 'Manager'),
 (3, 'Warehouseman'),
 (4, 'Printer');
 
+INSERT INTO users (id, user_name, password, name, last_name, pesel, email, phone_number) VALUES
+(1, 'JKowalski', '$2b$12$vDdaQqZUOgs//0WnON2lPuHsnDqpqRZBOHW1rCyjlexzZZPA3k10i', 'Jan', 'Kowalski', 'MTIzNDU2Nzg5MTIz', 'jKowalski@gmail.com', '123123123'),
+(2, 'ARogalska', '$2b$12$vDdaQqZUOgs//0WnON2lPuQU4V6OqGsR3IZ57ORPC3aupwf88RYt6', 'Anna', 'Rogalska', 'MDEyMzIxMDQ5MTI=', 'aRogalska@gmail.com', '234234234'),
+(3, 'RKaczmarski', '$2b$12$vDdaQqZUOgs//0WnON2lPu84ejDeoUOdJeM0SpjMziEqpnS67ZseC', 'Robert', 'Kaczmarski', 'MDEyMzIxMTIzNDU=', 'rKaczmarksi@gmail.com', '345345345'),
+(4, 'SStołeczny', '$2b$12$vDdaQqZUOgs//0WnON2lPuI.PACzHlzVkCRayhXkQg9y0KTTrNaRG', 'Stanisław', 'Stołeczny', 'MDEyMzIxNTQzMjE=', 'sStoleczny@gmail.com', '456456456');
 
-CREATE TABLE IF NOT EXISTS type (
-  `id` bigint NOT NULL PRIMARY KEY,
-  `name` varchar(255) NOT NULL
-);
+INSERT INTO user_role (user_id, role_id) VALUES
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4);
 
-DELETE FROM type;
-
-ALTER TABLE type AUTO_INCREMENT = 0;
-
-INSERT INTO type (`id`, `name`) VALUES
+INSERT INTO type (id, name) VALUES
 (1, 'Import'),
 (2, 'Shipment'),
 (3, 'Move'),
 (4, 'Print'),
 (5, 'Order product'),
-(6, 'Administration changes');
+(6, 'Administrative changes'),
+(7, 'others');
+
+INSERT INTO task (id, name, description, state, priority, type_id, creation_date, start_date, end_date) VALUES
+(1, 'Prepare products for shipment', 'prepare products attached to this task and deliver them to gate B', 0, 5, 2, '2024-01-14 10:10:00 ', NULL, NULL),
+(2, 'Move products', 'move products from between two spaces attached to this task', 0, 4, 3, '2024-01-10 10:09:00', NULL, NULL),
+(3, 'Prepare products for shipment', 'prepare products attached to this task and deliver them to gate A', 1, 6, 2, '2024-01-09 10:12:00', '2024-01-10 09:10:00', NULL),
+(4, 'Unload transport', 'Unload transport from gate C to spot attached to this task', 2, 10, 1, '2024-01-01 08:00:00', '2024-01-01 08:01:00', '2024-01-01 09:01:00'),
+(5, 'Print T-shirts pattern', 'Print flower pattern on products from space attached to this task', 0, 3, 4, '2024-01-14 10:09:00', NULL, NULL),
+(6, 'Print T-shirts pattern', 'Print flame pattern on T-shirts from space attached to this task', 1, 5, 4, '2024-01-10 10:08:00', '2024-01-11 08:08:00', NULL),
+(7, 'Print T-Shirts pattern', 'Print water pattern on T-shirts from space attached to this task', 2, 7, 4, '2024-01-08 08:08:00','2024-01-09 09:08:00', '2024-01-10 10:09:08'),
+(8, 'Remove user', 'Remove user Jkowalski', 0, 10, 6, '2024-02-01 08:08:08', NULL, NULL),
+(9, 'Order T-shirts', 'Order T-shirts, size XXL, black color, quantity: 300 from Ebay', 0, 10, 5, '2024-01-08 10:21:00', NULL, NULL);
+
+INSERT INTO user_task (user_id, task_id) VALUES
+(3, 3),
+(3, 4),
+(4, 6),
+(4, 7);
+
+INSERT INTO product (id, name, code, height, width, length, weight) VALUES
+(1, 'T-shirt_pink_Lx300', 'T-spin1', 50, 90, 70, 11),
+(2, 'Hoodie_pink_Sx200', 'Hoopin2', 70, 70, 50, 8),
+(3, 'Hoodie_black_XSx300', 'Hoobla3', 50, 60, 70, 12),
+(4, 'T-shirt_black_Sx200', 'T-sbla4', 90, 50, 70, 14),
+(5, 'Hoodie_blue_XLx200', 'Hooblu5', 60, 50, 70, 9),
+(6, 'T-shirt_blue_Lx400', 'T-sblu6', 70, 60, 80, 13),
+(7, 'Hoodie_black_XXLx400', 'Hoobla7', 80, 70, 90, 11),
+(8, 'T-shirt_blue_Sx400', 'T-sblu8', 50, 90, 50, 5),
+(9, 'T-shirt_black_Mx100', 'T-sbla9', 80, 50, 70, 5),
+(10, 'Hoodie_black_Sx100', 'Hoobla10', 80, 70, 90, 14),
+(11, 'T-shirt_pink_Lx300', 'T-spin11', 80, 60, 90, 14),
+(12, 'T-shirt_pink_XXLx100', 'T-spin12', 50, 50, 60, 11),
+(13, 'Hoodie_blue_Lx300', 'Hooblu13', 90, 50, 70, 11),
+(14, 'T-shirt_blue_XSx100', 'T-sblu14', 70, 80, 90, 14),
+(15, 'T-shirt_blue_XXLx200', 'T-sblu15', 80, 80, 70, 13),
+(16, 'T-shirt_black_XLx400', 'T-sbla16', 90, 90, 90, 8),
+(17, 'Hoodie_blue_XLx400', 'Hooblu17', 90, 80, 50, 12),
+(18, 'Hoodie_pink_XSx400', 'Hoopin18', 70, 60, 70, 6),
+(19, 'Hoodie_black_XXLx200', 'Hoobla19', 50, 60, 50, 7),
+(20, 'T-shirt_blue_Lx100', 'T-sblu20', 70, 60, 50, 5),
+(21, 'Hoodie_pink_XSx300', 'Hoopin21', 70, 50, 60, 12),
+(22, 'Hoodie_black_Lx100', 'Hoobla22', 60, 80, 60, 5),
+(23, 'Hoodie_black_XLx300', 'Hoobla23', 90, 60, 80, 14),
+(24, 'T-shirt_pink_Mx100', 'T-spin24', 50, 90, 70, 7),
+(25, 'Hoodie_pink_Sx300', 'Hoopin25', 50, 60, 60, 9),
+(26, 'Hoodie_black_Sx300', 'Hoobla26', 50, 90, 70, 8),
+(27, 'Hoodie_pink_Lx100', 'Hoopin27', 80, 60, 50, 5),
+(28, 'Hoodie_black_XXLx200', 'Hoobla28', 60, 80, 70, 8),
+(29, 'T-shirt_pink_XSx400', 'T-spin29', 60, 50, 70, 10),
+(30, 'Hoodie_blue_XSx300', 'Hooblu30', 50, 60, 60, 7),
+(31, 'T-shirt_blue_Mx200', 'T-sblu31', 60, 70, 90, 7),
+(32, 'T-shirt_black_Mx300', 'T-sbla32', 90, 60, 50, 6),
+(33, 'Hoodie_black_Lx400', 'Hoobla33', 90, 80, 50, 11),
+(34, 'Hoodie_black_Mx100', 'Hoobla34', 80, 80, 90, 14),
+(35, 'Hoodie_blue_XSx200', 'Hooblu35', 90, 80, 70, 13),
+(36, 'Hoodie_blue_Mx100', 'Hooblu36', 70, 50, 70, 5),
+(37, 'T-shirt_blue_XSx200', 'T-sblu37', 90, 80, 50, 10),
+(38, 'T-shirt_pink_Lx400', 'T-spin38', 70, 70, 50, 11),
+(39, 'T-shirt_blue_Mx100', 'T-sblu39', 80, 60, 50, 5),
+(40, 'T-shirt_blue_Mx200', 'T-sblu40', 50, 70, 80, 9),
+(41, 'T-shirt_blue_XLx400', 'T-sblu41', 90, 90, 90, 10),
+(42, 'Hoodie_blue_XLx200', 'Hooblu42', 50, 70, 60, 10),
+(43, 'Hoodie_black_XXLx400', 'Hoobla43', 50, 80, 70, 9),
+(44, 'Hoodie_blue_Sx100', 'Hooblu44', 50, 50, 70, 12),
+(45, 'T-shirt_pink_XXLx400', 'T-spin45', 50, 70, 50, 10),
+(46, 'T-shirt_black_Lx200', 'T-sbla46', 70, 50, 70, 12),
+(47, 'T-shirt_blue_Lx200', 'T-sblu47', 50, 50, 90, 14),
+(48, 'Hoodie_black_XXLx200', 'Hoobla48', 70, 90, 50, 12),
+(49, 'Hoodie_black_Mx100', 'Hoobla49', 70, 50, 80, 10),
+(50, 'T-shirt_blue_XXLx300', 'T-sblu50', 70, 90, 70, 6);
+
+INSERT INTO warehouse (id, building, zone, space_id, space_height, space_width, space_length) VALUES
+(1, 'A', 'a', 0, 140, 130, 120),
+(2, 'A', 'a', 1, 140, 140, 140),
+(3, 'A', 'a', 2, 120, 140, 140),
+(4, 'A', 'a', 3, 110, 100, 100),
+(5, 'A', 'a', 4, 130, 100, 120),
+(6, 'A', 'a', 5, 110, 140, 140),
+(7, 'A', 'a', 6, 140, 140, 100),
+(8, 'A', 'a', 7, 110, 140, 110),
+(9, 'A', 'a', 8, 100, 140, 100),
+(10, 'A', 'a', 9, 120, 110, 140),
+(11, 'A', 'a', 10, 140, 120, 120),
+(12, 'A', 'a', 11, 140, 140, 110),
+(13, 'A', 'a', 12, 110, 130, 130),
+(14, 'A', 'a', 13, 140, 130, 110),
+(15, 'A', 'a', 14, 110, 130, 120),
+(16, 'A', 'a', 15, 130, 120, 130),
+(17, 'A', 'a', 16, 100, 140, 120),
+(18, 'A', 'a', 17, 140, 110, 130),
+(19, 'A', 'a', 18, 140, 130, 130),
+(20, 'A', 'a', 19, 120, 120, 120),
+(21, 'A', 'a', 20, 130, 100, 110),
+(22, 'A', 'a', 21, 100, 140, 140),
+(23, 'A', 'a', 22, 110, 120, 140),
+(24, 'A', 'a', 23, 120, 120, 130),
+(25, 'A', 'a', 24, 110, 140, 100),
+(26, 'A', 'a', 25, 110, 130, 140),
+(27, 'A', 'a', 26, 100, 100, 130),
+(28, 'A', 'a', 27, 110, 140, 110),
+(29, 'A', 'a', 28, 130, 120, 110),
+(30, 'A', 'a', 29, 120, 140, 110),
+(31, 'A', 'a', 30, 130, 110, 130),
+(32, 'A', 'a', 31, 100, 140, 100),
+(33, 'A', 'a', 32, 110, 120, 130),
+(34, 'A', 'a', 33, 140, 110, 120),
+(35, 'A', 'a', 34, 130, 120, 120),
+(36, 'A', 'a', 35, 100, 140, 100),
+(37, 'A', 'a', 36, 100, 100, 140),
+(38, 'A', 'a', 37, 110, 140, 130),
+(39, 'A', 'a', 38, 100, 130, 100),
+(40, 'A', 'a', 39, 120, 140, 130),
+(41, 'A', 'a', 40, 130, 140, 120),
+(42, 'A', 'a', 41, 140, 130, 120),
+(43, 'A', 'a', 42, 100, 130, 140),
+(44, 'A', 'a', 43, 120, 110, 130),
+(45, 'A', 'a', 44, 100, 110, 100),
+(46, 'A', 'a', 45, 140, 140, 130),
+(47, 'A', 'a', 46, 120, 110, 110),
+(48, 'A', 'a', 47, 100, 100, 140),
+(49, 'A', 'a', 48, 110, 120, 120),
+(50, 'A', 'a', 49, 110, 140, 130),
+(51, 'A', 'b', 0, 110, 130, 140),
+(52, 'A', 'b', 1, 140, 130, 130),
+(53, 'A', 'b', 2, 130, 130, 120),
+(54, 'A', 'b', 3, 130, 110, 110),
+(55, 'A', 'b', 4, 120, 110, 110),
+(56, 'A', 'b', 5, 130, 120, 100),
+(57, 'A', 'b', 6, 130, 110, 130),
+(58, 'A', 'b', 7, 130, 140, 100),
+(59, 'A', 'b', 8, 140, 120, 100),
+(60, 'A', 'b', 9, 100, 140, 110),
+(61, 'A', 'b', 10, 130, 130, 120),
+(62, 'A', 'b', 11, 120, 100, 100),
+(63, 'A', 'b', 12, 140, 130, 120),
+(64, 'A', 'b', 13, 100, 100, 140),
+(65, 'A', 'b', 14, 110, 120, 120),
+(66, 'A', 'b', 15, 140, 140, 120),
+(67, 'A', 'b', 16, 120, 120, 120),
+(68, 'A', 'b', 17, 100, 120, 110),
+(69, 'A', 'b', 18, 100, 100, 140),
+(70, 'A', 'b', 19, 120, 100, 110),
+(71, 'A', 'b', 20, 120, 120, 120),
+(72, 'A', 'b', 21, 130, 120, 130),
+(73, 'A', 'b', 22, 120, 100, 120),
+(74, 'A', 'b', 23, 120, 130, 110),
+(75, 'A', 'b', 24, 120, 100, 100),
+(76, 'A', 'b', 25, 140, 100, 130),
+(77, 'A', 'b', 26, 120, 110, 140),
+(78, 'A', 'b', 27, 140, 130, 130),
+(79, 'A', 'b', 28, 120, 130, 130),
+(80, 'A', 'b', 29, 130, 120, 130),
+(81, 'A', 'b', 30, 100, 140, 110),
+(82, 'A', 'b', 31, 110, 100, 110),
+(83, 'A', 'b', 32, 110, 110, 140),
+(84, 'A', 'b', 33, 130, 140, 100),
+(85, 'A', 'b', 34, 110, 110, 130),
+(86, 'A', 'b', 35, 100, 140, 120),
+(87, 'A', 'b', 36, 120, 120, 100),
+(88, 'A', 'b', 37, 120, 140, 110),
+(89, 'A', 'b', 38, 140, 140, 140),
+(90, 'A', 'b', 39, 110, 110, 120),
+(91, 'A', 'b', 40, 130, 130, 110),
+(92, 'A', 'b', 41, 140, 140, 130),
+(93, 'A', 'b', 42, 140, 100, 110),
+(94, 'A', 'b', 43, 100, 130, 140),
+(95, 'A', 'b', 44, 100, 140, 130),
+(96, 'A', 'b', 45, 120, 140, 140),
+(97, 'A', 'b', 46, 110, 110, 120),
+(98, 'A', 'b', 47, 120, 140, 140),
+(99, 'A', 'b', 48, 130, 110, 140),
+(100, 'A', 'b', 49, 120, 100, 130),
+(101, 'A', 'c', 0, 140, 110, 140),
+(102, 'A', 'c', 1, 120, 120, 120),
+(103, 'A', 'c', 2, 100, 120, 100),
+(104, 'A', 'c', 3, 110, 110, 100),
+(105, 'A', 'c', 4, 110, 140, 120),
+(106, 'A', 'c', 5, 120, 100, 100),
+(107, 'A', 'c', 6, 140, 110, 120),
+(108, 'A', 'c', 7, 100, 130, 120),
+(109, 'A', 'c', 8, 120, 130, 140),
+(110, 'A', 'c', 9, 120, 100, 120),
+(111, 'A', 'c', 10, 140, 100, 140),
+(112, 'A', 'c', 11, 140, 110, 120),
+(113, 'A', 'c', 12, 140, 120, 110),
+(114, 'A', 'c', 13, 130, 140, 110),
+(115, 'A', 'c', 14, 110, 120, 110),
+(116, 'A', 'c', 15, 100, 100, 130),
+(117, 'A', 'c', 16, 110, 140, 110),
+(118, 'A', 'c', 17, 140, 110, 110),
+(119, 'A', 'c', 18, 110, 140, 100),
+(120, 'A', 'c', 19, 140, 130, 100),
+(121, 'A', 'c', 20, 100, 100, 100),
+(122, 'A', 'c', 21, 130, 140, 120),
+(123, 'A', 'c', 22, 130, 100, 110),
+(124, 'A', 'c', 23, 110, 100, 130),
+(125, 'A', 'c', 24, 130, 140, 110),
+(126, 'A', 'c', 25, 100, 110, 100),
+(127, 'A', 'c', 26, 140, 110, 130),
+(128, 'A', 'c', 27, 120, 100, 120),
+(129, 'A', 'c', 28, 120, 110, 130),
+(130, 'A', 'c', 29, 120, 140, 130),
+(131, 'A', 'c', 30, 110, 120, 100),
+(132, 'A', 'c', 31, 130, 120, 140),
+(133, 'A', 'c', 32, 140, 120, 110),
+(134, 'A', 'c', 33, 110, 140, 120),
+(135, 'A', 'c', 34, 120, 140, 110),
+(136, 'A', 'c', 35, 100, 120, 140),
+(137, 'A', 'c', 36, 120, 110, 120),
+(138, 'A', 'c', 37, 140, 130, 120),
+(139, 'A', 'c', 38, 100, 140, 120),
+(140, 'A', 'c', 39, 130, 130, 140),
+(141, 'A', 'c', 40, 120, 100, 110),
+(142, 'A', 'c', 41, 130, 120, 120),
+(143, 'A', 'c', 42, 100, 110, 140),
+(144, 'A', 'c', 43, 110, 110, 140),
+(145, 'A', 'c', 44, 120, 120, 140),
+(146, 'A', 'c', 45, 110, 110, 130),
+(147, 'A', 'c', 46, 130, 110, 140),
+(148, 'A', 'c', 47, 140, 110, 110),
+(149, 'A', 'c', 48, 110, 100, 130),
+(150, 'A', 'c', 49, 120, 140, 140),
+(151, 'B', 'a', 0, 100, 130, 130),
+(152, 'B', 'a', 1, 130, 110, 140),
+(153, 'B', 'a', 2, 100, 130, 100),
+(154, 'B', 'a', 3, 120, 120, 110),
+(155, 'B', 'a', 4, 100, 120, 110),
+(156, 'B', 'a', 5, 130, 110, 110),
+(157, 'B', 'a', 6, 110, 110, 130),
+(158, 'B', 'a', 7, 130, 100, 140),
+(159, 'B', 'a', 8, 130, 130, 130),
+(160, 'B', 'a', 9, 110, 140, 100),
+(161, 'B', 'a', 10, 110, 100, 110),
+(162, 'B', 'a', 11, 110, 120, 120),
+(163, 'B', 'a', 12, 130, 120, 120),
+(164, 'B', 'a', 13, 130, 140, 110),
+(165, 'B', 'a', 14, 130, 140, 100),
+(166, 'B', 'a', 15, 110, 110, 140),
+(167, 'B', 'a', 16, 130, 140, 130),
+(168, 'B', 'a', 17, 140, 100, 100),
+(169, 'B', 'a', 18, 120, 130, 140),
+(170, 'B', 'a', 19, 100, 130, 140),
+(171, 'B', 'a', 20, 100, 140, 110),
+(172, 'B', 'a', 21, 140, 130, 130),
+(173, 'B', 'a', 22, 100, 130, 100),
+(174, 'B', 'a', 23, 120, 140, 120),
+(175, 'B', 'a', 24, 140, 100, 110),
+(176, 'B', 'a', 25, 130, 130, 110),
+(177, 'B', 'a', 26, 100, 140, 140),
+(178, 'B', 'a', 27, 140, 110, 140),
+(179, 'B', 'a', 28, 100, 140, 110),
+(180, 'B', 'a', 29, 130, 110, 110),
+(181, 'B', 'a', 30, 120, 120, 130),
+(182, 'B', 'a', 31, 130, 100, 120),
+(183, 'B', 'a', 32, 120, 130, 100),
+(184, 'B', 'a', 33, 100, 110, 110),
+(185, 'B', 'a', 34, 140, 140, 140),
+(186, 'B', 'a', 35, 120, 130, 110),
+(187, 'B', 'a', 36, 140, 100, 100),
+(188, 'B', 'a', 37, 140, 110, 110),
+(189, 'B', 'a', 38, 140, 130, 120),
+(190, 'B', 'a', 39, 120, 130, 100),
+(191, 'B', 'a', 40, 120, 120, 140),
+(192, 'B', 'a', 41, 100, 120, 140),
+(193, 'B', 'a', 42, 120, 100, 130),
+(194, 'B', 'a', 43, 140, 100, 120),
+(195, 'B', 'a', 44, 140, 130, 140),
+(196, 'B', 'a', 45, 140, 100, 140),
+(197, 'B', 'a', 46, 100, 140, 100),
+(198, 'B', 'a', 47, 140, 110, 100),
+(199, 'B', 'a', 48, 100, 130, 110),
+(200, 'B', 'a', 49, 140, 110, 110),
+(201, 'B', 'b', 0, 130, 130, 140),
+(202, 'B', 'b', 1, 140, 100, 120),
+(203, 'B', 'b', 2, 140, 100, 130),
+(204, 'B', 'b', 3, 100, 120, 120),
+(205, 'B', 'b', 4, 130, 120, 110),
+(206, 'B', 'b', 5, 120, 140, 110),
+(207, 'B', 'b', 6, 120, 110, 100),
+(208, 'B', 'b', 7, 130, 130, 140),
+(209, 'B', 'b', 8, 110, 100, 130),
+(210, 'B', 'b', 9, 130, 100, 120),
+(211, 'B', 'b', 10, 140, 100, 140),
+(212, 'B', 'b', 11, 140, 100, 140),
+(213, 'B', 'b', 12, 130, 130, 110),
+(214, 'B', 'b', 13, 130, 120, 100),
+(215, 'B', 'b', 14, 110, 120, 110),
+(216, 'B', 'b', 15, 120, 110, 100),
+(217, 'B', 'b', 16, 140, 120, 120),
+(218, 'B', 'b', 17, 100, 130, 110),
+(219, 'B', 'b', 18, 110, 130, 100),
+(220, 'B', 'b', 19, 110, 110, 120),
+(221, 'B', 'b', 20, 110, 110, 140),
+(222, 'B', 'b', 21, 100, 140, 120),
+(223, 'B', 'b', 22, 140, 120, 130),
+(224, 'B', 'b', 23, 120, 120, 100),
+(225, 'B', 'b', 24, 100, 110, 120),
+(226, 'B', 'b', 25, 130, 140, 100),
+(227, 'B', 'b', 26, 140, 120, 120),
+(228, 'B', 'b', 27, 100, 140, 130),
+(229, 'B', 'b', 28, 130, 120, 140),
+(230, 'B', 'b', 29, 100, 120, 140),
+(231, 'B', 'b', 30, 110, 120, 130),
+(232, 'B', 'b', 31, 100, 110, 130),
+(233, 'B', 'b', 32, 140, 130, 100),
+(234, 'B', 'b', 33, 140, 120, 140),
+(235, 'B', 'b', 34, 100, 110, 110),
+(236, 'B', 'b', 35, 100, 120, 140),
+(237, 'B', 'b', 36, 120, 140, 110),
+(238, 'B', 'b', 37, 130, 120, 110),
+(239, 'B', 'b', 38, 100, 130, 130),
+(240, 'B', 'b', 39, 120, 110, 100),
+(241, 'B', 'b', 40, 130, 130, 110),
+(242, 'B', 'b', 41, 120, 140, 120),
+(243, 'B', 'b', 42, 110, 140, 120),
+(244, 'B', 'b', 43, 120, 130, 140),
+(245, 'B', 'b', 44, 140, 130, 120),
+(246, 'B', 'b', 45, 120, 140, 110),
+(247, 'B', 'b', 46, 130, 110, 130),
+(248, 'B', 'b', 47, 120, 110, 130),
+(249, 'B', 'b', 48, 100, 140, 140),
+(250, 'B', 'b', 49, 140, 100, 120),
+(251, 'B', 'c', 0, 130, 130, 120),
+(252, 'B', 'c', 1, 110, 110, 110),
+(253, 'B', 'c', 2, 120, 110, 130),
+(254, 'B', 'c', 3, 140, 140, 140),
+(255, 'B', 'c', 4, 140, 140, 100),
+(256, 'B', 'c', 5, 110, 130, 130),
+(257, 'B', 'c', 6, 110, 130, 140),
+(258, 'B', 'c', 7, 130, 100, 120),
+(259, 'B', 'c', 8, 130, 120, 130),
+(260, 'B', 'c', 9, 140, 120, 100),
+(261, 'B', 'c', 10, 100, 110, 120),
+(262, 'B', 'c', 11, 140, 140, 140),
+(263, 'B', 'c', 12, 100, 130, 100),
+(264, 'B', 'c', 13, 120, 120, 140),
+(265, 'B', 'c', 14, 110, 140, 140),
+(266, 'B', 'c', 15, 140, 130, 130),
+(267, 'B', 'c', 16, 130, 120, 110),
+(268, 'B', 'c', 17, 130, 120, 130),
+(269, 'B', 'c', 18, 110, 120, 140),
+(270, 'B', 'c', 19, 120, 130, 130),
+(271, 'B', 'c', 20, 100, 110, 110),
+(272, 'B', 'c', 21, 120, 110, 140),
+(273, 'B', 'c', 22, 130, 140, 120),
+(274, 'B', 'c', 23, 110, 100, 110),
+(275, 'B', 'c', 24, 140, 120, 110),
+(276, 'B', 'c', 25, 100, 100, 100),
+(277, 'B', 'c', 26, 140, 130, 100),
+(278, 'B', 'c', 27, 100, 100, 130),
+(279, 'B', 'c', 28, 140, 140, 140),
+(280, 'B', 'c', 29, 100, 100, 140),
+(281, 'B', 'c', 30, 140, 140, 110),
+(282, 'B', 'c', 31, 130, 110, 140),
+(283, 'B', 'c', 32, 130, 130, 140),
+(284, 'B', 'c', 33, 140, 120, 100),
+(285, 'B', 'c', 34, 140, 110, 130),
+(286, 'B', 'c', 35, 110, 100, 130),
+(287, 'B', 'c', 36, 110, 110, 100),
+(288, 'B', 'c', 37, 100, 110, 120),
+(289, 'B', 'c', 38, 130, 110, 110),
+(290, 'B', 'c', 39, 130, 130, 130),
+(291, 'B', 'c', 40, 120, 140, 110),
+(292, 'B', 'c', 41, 130, 140, 120),
+(293, 'B', 'c', 42, 140, 110, 140),
+(294, 'B', 'c', 43, 110, 110, 130),
+(295, 'B', 'c', 44, 130, 130, 100),
+(296, 'B', 'c', 45, 100, 140, 100),
+(297, 'B', 'c', 46, 140, 130, 100),
+(298, 'B', 'c', 47, 140, 120, 140),
+(299, 'B', 'c', 48, 120, 110, 120),
+(300, 'B', 'c', 49, 130, 140, 100);
+
+INSERT INTO task_product (task_id, product_id) VALUES
+(1, 1),
+(1, 2),
+(1, 3),
+(1, 4),
+(3, 5),
+(3, 6),
+(5, 7),
+(6, 8),
+(7, 8);
+
+INSERT INTO task_warehouse (task_id, warehouse_id) VALUES
+(2, 1),
+(2, 200),
+(3, 201);
