@@ -1,7 +1,10 @@
 package com.pink.itms.mapper;
 
+import com.pink.itms.config.security.AesCbcCrypt;
 import com.pink.itms.dto.register.RegisterRequestDTO;
 import com.pink.itms.dto.register.RegisterResponseDTO;
+import com.pink.itms.exception.aes.CipherDefectedException;
+import com.pink.itms.exception.aes.InvalidKeyLengthException;
 import com.pink.itms.exception.role.RoleNotFoundException;
 import com.pink.itms.model.Role;
 import com.pink.itms.model.User;
@@ -11,6 +14,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,11 +28,13 @@ public class RegisterMapper {
     private final RoleRepository roleRepository;
 
     private final PasswordEncoder passwordEncoder;
+    private final AesCbcCrypt crypt;
 
-    public RegisterMapper(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public RegisterMapper(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, AesCbcCrypt crypt) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.crypt = crypt;
     }
 
     public User toEntity(RegisterRequestDTO registerRequestDTO) {
@@ -34,9 +43,17 @@ public class RegisterMapper {
         user.setPassword(passwordEncoder.encode(registerRequestDTO.getPassword()));
         user.setName(registerRequestDTO.getName());
         user.setLastname(registerRequestDTO.getLastname());
-        user.setPesel(registerRequestDTO.getPesel());
         user.setPhoneNumber(registerRequestDTO.getPhone());
         user.setEmail(registerRequestDTO.getEmail());
+
+
+        try {
+            user.setPesel(crypt.encrypt(registerRequestDTO.getPesel()));
+        } catch (InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
+            throw new CipherDefectedException("Error: PESEL cipher has ben defected.");
+        } catch (InvalidKeyException e) {
+            throw new InvalidKeyLengthException("Error: AES encryption key length is invalid. Expected 16-byte key");        }
+
 
         Role userRole = roleRepository.findById(registerRequestDTO.getRoleId())
                 .orElseThrow(() -> new RoleNotFoundException("Error: Role is not found."));
@@ -57,9 +74,16 @@ public class RegisterMapper {
         registerResponseDTO.setUsername(user.getUsername());
         registerResponseDTO.setName(user.getName());
         registerResponseDTO.setLastname(user.getLastname());
-        registerResponseDTO.setPesel(user.getPesel());
         registerResponseDTO.setEmail(user.getEmail());
         registerResponseDTO.setPhoneNumber(user.getPhoneNumber());
+
+        try {
+            registerResponseDTO.setPesel(crypt.decrypt(user.getPesel()));
+        } catch (InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
+            throw new CipherDefectedException("Error: PESEL cipher has ben defected.");
+        } catch (InvalidKeyException e) {
+            throw new InvalidKeyLengthException("Error: AES encryption key length is invalid. Expected 16-Byte key");
+        }
 
         return registerResponseDTO;
     }

@@ -108,10 +108,10 @@ INSERT INTO role (id, name) VALUES
 (4, 'Printer');
 
 INSERT INTO users (id, user_name, password, name, last_name, pesel, email, phone_number) VALUES
-(1, 'JKowalski', '$2b$12$vDdaQqZUOgs//0WnON2lPuHsnDqpqRZBOHW1rCyjlexzZZPA3k10i', 'Jan', 'Kowalski', 'MTIzNDU2Nzg5MTIz', 'jKowalski@gmail.com', '123123123'),
-(2, 'ARogalska', '$2b$12$vDdaQqZUOgs//0WnON2lPuQU4V6OqGsR3IZ57ORPC3aupwf88RYt6', 'Anna', 'Rogalska', 'MDEyMzIxMDQ5MTI=', 'aRogalska@gmail.com', '234234234'),
-(3, 'RKaczmarski', '$2b$12$vDdaQqZUOgs//0WnON2lPu84ejDeoUOdJeM0SpjMziEqpnS67ZseC', 'Robert', 'Kaczmarski', 'MDEyMzIxMTIzNDU=', 'rKaczmarksi@gmail.com', '345345345'),
-(4, 'SStołeczny', '$2b$12$vDdaQqZUOgs//0WnON2lPuI.PACzHlzVkCRayhXkQg9y0KTTrNaRG', 'Stanisław', 'Stołeczny', 'MDEyMzIxNTQzMjE=', 'sStoleczny@gmail.com', '456456456');
+(1, 'JKowalski', '$2b$12$vDdaQqZUOgs//0WnON2lPuHsnDqpqRZBOHW1rCyjlexzZZPA3k10i', 'Jan', 'Kowalski', 'bByC+fkZin098Wtl41vOxT7DKoy8k1HJ8khJ7+Xp6Xk=', 'jKowalski@gmail.com', '123123123'),
+(2, 'ARogalska', '$2b$12$vDdaQqZUOgs//0WnON2lPuQU4V6OqGsR3IZ57ORPC3aupwf88RYt6', 'Anna', 'Rogalska', 'VoLD5zCmh38t6MvIKkMQRjyPVOlt0Sc00ElJ8BviG5s=', 'aRogalska@gmail.com', '234234234'),
+(3, 'RKaczmarski', '$2b$12$vDdaQqZUOgs//0WnON2lPu84ejDeoUOdJeM0SpjMziEqpnS67ZseC', 'Robert', 'Kaczmarski', 'v51bzdSdUu79mLD7DUemqITrQ5w6v/C1LeVCC3M8yHU=', 'rKaczmarksi@gmail.com', '345345345'),
+(4, 'SStołeczny', '$2b$12$vDdaQqZUOgs//0WnON2lPuI.PACzHlzVkCRayhXkQg9y0KTTrNaRG', 'Stanisław', 'Stołeczny', 'Lin4gqRVO6LFReAw0qKxYY3xZe6TLH3I0pdAhUKhJ14=', 'sStoleczny@gmail.com', '456456456');
 
 INSERT INTO user_role (user_id, role_id) VALUES
 (1, 1),
