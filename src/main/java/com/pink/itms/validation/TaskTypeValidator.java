@@ -10,6 +10,11 @@ public class TaskTypeValidator {
     TaskTypeRepository taskTypeRepository;
     public TaskTypeValidator(TaskTypeRepository taskTypeRepository) { this.taskTypeRepository = taskTypeRepository;}
 
+    /**
+     * Validate TaskTypeRequestDTO before creation
+     * @param taskTypeRequestDTO    Object to validate
+     * @throws ExistingNameException
+     */
     public void taskTypeValidation(TaskTypeRequestDTO taskTypeRequestDTO) {
         if (taskTypeRepository.findByName(taskTypeRequestDTO.getName()).isPresent()){
             throw new ExistingNameException("Task type " + taskTypeRequestDTO.getName() + " already exists.");

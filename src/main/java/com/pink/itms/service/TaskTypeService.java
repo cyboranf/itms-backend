@@ -23,6 +23,12 @@ public class TaskTypeService {
         this.taskTypeValidator = taskTypeValidator;
     }
 
+    /**
+     *  Creates Entity from request object
+     * @param taskTypeRequestDTO request object for entity creation
+     * @throws com.pink.itms.exception.taskType.ExistingNameException if type with this name already exists
+     * @return {@link TaskTypeResponseDTO} response from created Entity
+     */
     public TaskTypeResponseDTO createTaskType(TaskTypeRequestDTO taskTypeRequestDTO) {
         taskTypeValidator.taskTypeValidation(taskTypeRequestDTO);
         TaskType taskType = taskTypeMapper.toEntity(taskTypeRequestDTO);
