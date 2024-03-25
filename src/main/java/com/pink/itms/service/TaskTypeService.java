@@ -2,6 +2,7 @@ package com.pink.itms.service;
 
 import com.pink.itms.dto.taskType.TaskTypeRequestDTO;
 import com.pink.itms.dto.taskType.TaskTypeResponseDTO;
+import com.pink.itms.exception.taskType.TaskTypeNotFoundException;
 import com.pink.itms.mapper.TaskTypeMapper;
 import com.pink.itms.model.TaskType;
 import com.pink.itms.repository.TaskTypeRepository;
@@ -35,5 +36,18 @@ public class TaskTypeService {
         TaskType savedTaskType = taskTypeRepository.save(taskType);
 
         return  taskTypeMapper.toDto(savedTaskType);
+    }
+
+    /**
+     * Deletes entity with given id
+     * @param id id of task type to delete
+     * @throws {@link TaskTypeNotFoundException} if task type doesn't exist
+     */
+    public void deleteTaskType(long id) {
+        try {
+            taskTypeRepository.deleteById(id);
+        } catch(Exception e) {
+            throw new TaskTypeNotFoundException("Task type with id " + id + " doesn't exists.");
+        }
     }
 }
