@@ -48,7 +48,7 @@ public class TaskTypeService {
      * Deletes entity with given id
      *
      * @param id id of task type to delete
-     * @throws {@link TaskTypeNotFoundException} if task type doesn't exist
+     * @throws TaskTypeNotFoundException if task type doesn't exist
      */
     public void deleteTaskType(long id) {
         try {
@@ -78,6 +78,7 @@ public class TaskTypeService {
 
     /**
      * returns all the task types
+     *
      * @return {@link List<TaskTypeResponseDTO>} list of DTO responseds
      */
     public List<TaskTypeResponseDTO> getAll() {
@@ -89,5 +90,18 @@ public class TaskTypeService {
         }
 
         return responseDTOList;
+    }
+
+    /**
+     * returns single task type by given id
+     *
+     * @param id id of task to return
+     * @throws TaskTypeNotFoundException if task type does not exists in repository
+     * @return {@link TaskTypeResponseDTO}
+     */
+    public TaskTypeResponseDTO getSingle(long id) {
+        taskTypeRepository.findById(id).orElseThrow(() -> new TaskTypeNotFoundException("Task type with id " + id + "doesn't exists"));
+
+        return taskTypeMapper.toDto(taskTypeRepository.getById(id));
     }
 }
