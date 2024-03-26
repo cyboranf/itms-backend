@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 public class TaskTypeMapper {
     public TaskType toEntity(TaskTypeRequestDTO taskTypeRequestDTO) {
         TaskType taskType = new TaskType();
-        taskType.setId(taskTypeRequestDTO.getId());
         taskType.setName(taskTypeRequestDTO.getName());
         return taskType;
     }
