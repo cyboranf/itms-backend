@@ -2,6 +2,7 @@ package com.pink.itms.service;
 
 import com.pink.itms.dto.product.ProductRequestDTO;
 import com.pink.itms.dto.product.ProductResponseDTO;
+import com.pink.itms.exception.product.ProductNotFoundException;
 import com.pink.itms.mapper.ProductMapper;
 import com.pink.itms.model.Product;
 import com.pink.itms.repository.ProductRepository;
@@ -32,5 +33,13 @@ public class ProductService {
         return productMapper.toDto(savedProduct);
     }
 
+    public void deleteProduct(long id) {
+        if (productRepository.findById(id).isPresent()) {
+            productRepository.deleteById(id);
+            return;
+        }
+
+        throw new ProductNotFoundException("Product with id " + id + "doesn't exists.");
+    }
 
 }
