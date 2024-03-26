@@ -24,6 +24,16 @@ public class TaskTypeController {
         }
     }
 
+    @PutMapping("/tasks/types/{id}")
+    public ResponseEntity<?> editTaskType(@PathVariable long id, @RequestBody TaskTypeRequestDTO taskTypeRequestDTO) {
+        try {
+            TaskTypeResponseDTO taskTypeResponseDTO = taskTypeService.editTaskType(id, taskTypeRequestDTO);
+            return new ResponseEntity<>(taskTypeResponseDTO, HttpStatus.OK);
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @DeleteMapping("/tasks/types/{id}")
     public ResponseEntity<?> deleteTaskType(@PathVariable long id) {
         try {

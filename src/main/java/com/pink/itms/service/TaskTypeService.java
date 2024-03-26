@@ -2,9 +2,11 @@ package com.pink.itms.service;
 
 import com.pink.itms.dto.taskType.TaskTypeRequestDTO;
 import com.pink.itms.dto.taskType.TaskTypeResponseDTO;
+import com.pink.itms.exception.taskType.ExistingNameException;
 import com.pink.itms.exception.taskType.TaskTypeNotFoundException;
 import com.pink.itms.mapper.TaskTypeMapper;
 import com.pink.itms.model.TaskType;
+import com.pink.itms.repository.TaskRepository;
 import com.pink.itms.repository.TaskTypeRepository;
 import com.pink.itms.validation.TaskTypeValidator;
 import org.springframework.stereotype.Service;
@@ -49,5 +51,22 @@ public class TaskTypeService {
         } catch(Exception e) {
             throw new TaskTypeNotFoundException("Task type with id " + id + " doesn't exists.");
         }
+    }
+
+    /**
+     * Edits exisiting entity pointed by given id
+     * @param id of entity to edit
+     * @param taskTypeRequestDTO values to replace with
+     * @return {@link TaskTypeResponseDTO} - rosponse from changed entity
+     */
+    public TaskTypeResponseDTO editTaskType(Long id, TaskTypeRequestDTO taskTypeRequestDTO) {
+        if (taskTypeRepository.findByName(taskTypeRequestDTO.getName()).isPresent()) {
+            throw new ExistingNameException("Task type " + taskTypeRequestDTO.getName() + " already exist.");
+        }
+
+        TaskType taskType = taskTypeRepository.getById(id);
+        taskType.setName(taskTypeRequestDTO.getName());
+
+        return taskTypeMapper.toDto(taskType);
     }
 }
