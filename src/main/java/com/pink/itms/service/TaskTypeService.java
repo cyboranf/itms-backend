@@ -12,6 +12,9 @@ import com.pink.itms.validation.TaskTypeValidator;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.AbstractList;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional
@@ -27,35 +30,38 @@ public class TaskTypeService {
     }
 
     /**
-     *  Creates Entity from request object
+     * Creates Entity from request object
+     *
      * @param taskTypeRequestDTO request object for entity creation
-     * @throws com.pink.itms.exception.taskType.ExistingNameException if type with this name already exists
      * @return {@link TaskTypeResponseDTO} response from created Entity
+     * @throws com.pink.itms.exception.taskType.ExistingNameException if type with this name already exists
      */
     public TaskTypeResponseDTO createTaskType(TaskTypeRequestDTO taskTypeRequestDTO) {
         taskTypeValidator.taskTypeValidation(taskTypeRequestDTO);
         TaskType taskType = taskTypeMapper.toEntity(taskTypeRequestDTO);
         TaskType savedTaskType = taskTypeRepository.save(taskType);
 
-        return  taskTypeMapper.toDto(savedTaskType);
+        return taskTypeMapper.toDto(savedTaskType);
     }
 
     /**
      * Deletes entity with given id
+     *
      * @param id id of task type to delete
      * @throws {@link TaskTypeNotFoundException} if task type doesn't exist
      */
     public void deleteTaskType(long id) {
         try {
             taskTypeRepository.deleteById(id);
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new TaskTypeNotFoundException("Task type with id " + id + " doesn't exists.");
         }
     }
 
     /**
      * Edits exisiting entity pointed by given id
-     * @param id of entity to edit
+     *
+     * @param id                 of entity to edit
      * @param taskTypeRequestDTO values to replace with
      * @return {@link TaskTypeResponseDTO} - rosponse from changed entity
      */
@@ -68,5 +74,20 @@ public class TaskTypeService {
         taskType.setName(taskTypeRequestDTO.getName());
 
         return taskTypeMapper.toDto(taskType);
+    }
+
+    /**
+     * returns all the task types
+     * @return {@link List<TaskTypeResponseDTO>} list of DTO responseds
+     */
+    public List<TaskTypeResponseDTO> getAll() {
+        List<TaskTypeResponseDTO> responseDTOList = new ArrayList<>();
+        List<TaskType> entitiesList = taskTypeRepository.findAll();
+
+        for (int i = 0; i < entitiesList.size(); i++) {
+            responseDTOList.add(taskTypeMapper.toDto(entitiesList.get(i)));
+        }
+
+        return responseDTOList;
     }
 }

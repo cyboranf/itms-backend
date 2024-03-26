@@ -43,4 +43,9 @@ public class TaskTypeController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/tasks/types")
+    public ResponseEntity<?> getallTasksTypes() {
+        return new ResponseEntity<>(taskTypeService.getAll(), HttpStatus.OK);
+    }
 }
