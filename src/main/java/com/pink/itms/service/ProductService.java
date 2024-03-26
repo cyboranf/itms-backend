@@ -23,6 +23,7 @@ public class ProductService {
 
     /**
      * creates and saves product entity
+     *
      * @param productRequestDTO product to create
      * @return {@link ProductResponseDTO} - response from created product
      */
@@ -33,6 +34,12 @@ public class ProductService {
         return productMapper.toDto(savedProduct);
     }
 
+    /**
+     * deletes product with given id
+     *
+     * @param id id of product to delete
+     * @throws ProductNotFoundException if product doesn't exist if product repository
+     */
     public void deleteProduct(long id) {
         if (productRepository.findById(id).isPresent()) {
             productRepository.deleteById(id);
@@ -40,6 +47,29 @@ public class ProductService {
         }
 
         throw new ProductNotFoundException("Product with id " + id + "doesn't exists.");
+    }
+
+    /**
+     * edits product of given id
+     *
+     * @param id         id of product to edit
+     * @param requestDTO data for product to update with
+     * @return {@link ProductResponseDTO} response from edited product
+     * @throws ProductNotFoundException if product doesn't exist in product repository
+     */
+    public ProductResponseDTO editProduct(long id, ProductRequestDTO requestDTO) {
+        productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product with id " + id + " doesn't exist."));
+
+        Product product = productRepository.getById(id);
+
+        product.setName(requestDTO.getName());
+        product.setCode(requestDTO.getCode());
+        product.setWeight(requestDTO.getWeight());
+        product.setWidth(requestDTO.getWidth());
+        product.setHeight(requestDTO.getHeight());
+        product.setLength(requestDTO.getLength());
+
+        return productMapper.toDto(product);
     }
 
 }
