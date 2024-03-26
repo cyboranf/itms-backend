@@ -43,4 +43,19 @@ public class TaskTypeController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/tasks/types")
+    public ResponseEntity<?> getallTasksTypes() {
+        return new ResponseEntity<>(taskTypeService.getAll(), HttpStatus.OK);
+    }
+
+    @GetMapping("/tasks/types/{id}")
+    public ResponseEntity<?> getSignleTaskType(@PathVariable long id) {
+        try {
+            TaskTypeResponseDTO responseDTO = taskTypeService.getSingle(id);
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        } catch(Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
