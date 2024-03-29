@@ -1,4 +1,4 @@
-package com.pink.itms.config.security.documentation;
+package com.pink.itms.config.documentation;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
