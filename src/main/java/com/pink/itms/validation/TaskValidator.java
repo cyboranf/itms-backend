@@ -1,12 +1,18 @@
 package com.pink.itms.validation;
 
 import com.pink.itms.dto.task.TaskRequestDTO;
-import com.pink.itms.dto.task.TaskResponseDTO;
-import com.pink.itms.exception.user.ExistingUsernameException;
+import com.pink.itms.model.TaskType;
+import com.pink.itms.repository.TaskTypeRepository;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TaskValidator {
+
+    private final TaskTypeRepository taskTypeRepository;
+
+    public TaskValidator(TaskTypeRepository taskTypeRepository) {
+        this.taskTypeRepository = taskTypeRepository;
+    }
 
     //TODO jak bedzie reszta class to wtedy poprawic walidacje np. czy type istnieje itp :D
     public void validateCreate(TaskRequestDTO taskRequestDTO) {
@@ -29,6 +35,9 @@ public class TaskValidator {
         if (taskRequestDTO.getType_id() == null || taskRequestDTO.getType_id() <= 0) {
             throw new IllegalArgumentException("Task type ID must be specified and must be a positive integer");
         }
+
+        taskTypeRepository.findById(taskRequestDTO.getType_id())
+                .orElseThrow(() -> new IllegalArgumentException("Task type with id = " + taskRequestDTO.getType_id() + " does not exist"));
 
     }
 }
