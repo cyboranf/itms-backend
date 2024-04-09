@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
@@ -18,10 +20,10 @@ public class TaskController {
 
     @PostMapping
     public ResponseEntity<?> createTask(@RequestBody TaskRequestDTO taskRequestDTO) {
-        try{
+        try {
             TaskResponseDTO taskResponseDTO = taskService.createTask(taskRequestDTO);
             return new ResponseEntity<>(taskResponseDTO, HttpStatus.CREATED);
-        }catch(IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
@@ -48,5 +50,14 @@ public class TaskController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage()); // Return 500 Internal Server Error for other exceptions
         }
+    }
+
+    /**
+     * Get all tasks
+     * @return list of all tasks
+     */
+    @GetMapping("/all")
+    public ResponseEntity<List<TaskResponseDTO>> getAll() {
+        return ResponseEntity.ok(taskService.getAll());
     }
 }

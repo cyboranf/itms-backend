@@ -11,6 +11,7 @@ import com.pink.itms.validation.UserValidator;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -31,5 +32,16 @@ public class UserService {
         userMapper.updateUserFromRequestDTO(dto, user);
         User savedUser = userRepository.save(user);
         return userMapper.entityToDto(savedUser);
+    }
+
+    /**
+     * Get all users
+     * @return List of UserResponseDTO
+     */
+    public List<UserResponseDTO> getAll() {
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::entityToDto)
+                .toList();
     }
 }

@@ -9,6 +9,7 @@ import com.pink.itms.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @Transactional
@@ -23,6 +24,7 @@ public class ProductService {
 
     /**
      * creates and saves product entity
+     *
      * @param productRequestDTO product to create
      * @return {@link ProductResponseDTO} - response from created product
      */
@@ -33,6 +35,12 @@ public class ProductService {
         return productMapper.toDto(savedProduct);
     }
 
+    /**
+     * Deletes product with given id
+     *
+     * @param id id of product to delete
+     * @throws ProductNotFoundException if product doesn't exist
+     */
     public void deleteProduct(long id) {
         if (productRepository.findById(id).isPresent()) {
             productRepository.deleteById(id);
@@ -42,4 +50,14 @@ public class ProductService {
         throw new ProductNotFoundException("Product with id " + id + "doesn't exists.");
     }
 
+    /**
+     * Returns all products
+     * @return list of all products
+     */
+    public List<ProductResponseDTO> getAll() {
+        return productRepository.findAll()
+                .stream()
+                .map(productMapper::toDto)
+                .toList();
+    }
 }
