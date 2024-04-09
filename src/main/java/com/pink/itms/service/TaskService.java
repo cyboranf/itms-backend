@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Transactional
@@ -46,5 +47,17 @@ public class TaskService {
                 .orElseThrow(() -> new IllegalArgumentException("Task with id = " + taskId + " does not exist"));
 
         taskRepository.delete(task);
+    }
+
+    /**
+     * Get all tasks
+     *
+     * @return
+     */
+    public List<TaskResponseDTO> getAll() {
+        return taskRepository.findAll()
+                .stream()
+                .map(taskMapper::toDto)
+                .toList();
     }
 }

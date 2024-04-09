@@ -7,8 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/products")
 public class ProductController {
     ProductService productService;
 
@@ -16,13 +18,21 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @PostMapping("/products")
+    /**
+     * @param productRequestDTO
+     * @return {@link ProductResponseDTO} - response from created product
+     */
+    @PostMapping("")
     public ResponseEntity<?> createProduct(@RequestBody ProductRequestDTO productRequestDTO) {
         ProductResponseDTO productResponseDTO = productService.createProduct(productRequestDTO);
         return new ResponseEntity<>(productResponseDTO, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/products/{id}")
+    /**
+     * @param id
+     * @return {@link ProductResponseDTO} - response from created product
+     */
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable long id) {
         try {
             productService.deleteProduct(id);
@@ -30,5 +40,13 @@ public class ProductController {
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    /**
+     * @return list of all products
+     */
+    @GetMapping("/all")
+    public ResponseEntity<List<ProductResponseDTO>> getAll() {
+        return ResponseEntity.ok(productService.getAll());
     }
 }

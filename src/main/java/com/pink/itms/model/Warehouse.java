@@ -18,11 +18,11 @@ public class Warehouse {
     @Column(name = "space_id")
     private Long spaceId;
     @Column(name = "space_height")
-    private String spaceHeight;
+    private int spaceHeight;
     @Column(name = "space_width")
-    private String spaceWidth;
+    private int spaceWidth;
     @Column(name = "space_length")
-    private String spaceLength;
+    private int spaceLength;
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "product_id")
     private Product product;
