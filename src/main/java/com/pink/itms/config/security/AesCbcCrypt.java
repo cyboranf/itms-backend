@@ -16,6 +16,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
 
+/**
+ * AES 암호화/복호화
+ */
 @Component
 public class AesCbcCrypt {
     private final String algorithm = "AES/CBC/PKCS5Padding";
