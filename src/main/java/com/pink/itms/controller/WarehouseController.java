@@ -1,5 +1,6 @@
 package com.pink.itms.controller;
 
+import com.pink.itms.dto.product.ProductResponseDTO;
 import com.pink.itms.dto.taskType.TaskTypeRequestDTO;
 import com.pink.itms.dto.taskType.TaskTypeResponseDTO;
 import com.pink.itms.dto.warehouse.WarehouseRequestDTO;
@@ -29,7 +30,10 @@ public class WarehouseController {
         WarehouseResponseDTO warehouseResponseDTO = warehouseService.createWarehouse(warehouseRequestDTO);
         return new ResponseEntity<>(warehouseResponseDTO, HttpStatus.CREATED);
     }
-
+    /**
+     * @param id
+     * @return {@link WarehouseResponseDTO} - response from edit warehouse
+     */
     @PutMapping("/{id}")
     public ResponseEntity<?> editWarehouse(@PathVariable long id, @RequestBody WarehouseRequestDTO warehouseRequestDTO) {
         try {
@@ -40,6 +44,19 @@ public class WarehouseController {
         }
     }
 
+    /**
+     * @param id
+     * @return {@link WarehouseResponseDTO} - response from deleted warehouse
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteWarehouse(@PathVariable long id) {
+        try {
+            warehouseService.deleteWarehouse(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     /**
      * Get all warehouses

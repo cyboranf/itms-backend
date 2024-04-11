@@ -4,7 +4,9 @@ import com.pink.itms.dto.taskType.TaskTypeRequestDTO;
 import com.pink.itms.dto.taskType.TaskTypeResponseDTO;
 import com.pink.itms.dto.warehouse.WarehouseRequestDTO;
 import com.pink.itms.dto.warehouse.WarehouseResponseDTO;
+import com.pink.itms.exception.product.ProductNotFoundException;
 import com.pink.itms.exception.taskType.ExistingNameException;
+import com.pink.itms.exception.warehouse.WarehouseNotFoundException;
 import com.pink.itms.mapper.WarehouseMapper;
 import com.pink.itms.model.Product;
 import com.pink.itms.model.TaskType;
@@ -73,7 +75,20 @@ public class WarehouseService {
         return warehouseMapper.toDTO(warehouse);
     }
 
+    /**
+     * Deletes warehouse with given id
+     *
+     * @param id id of warehouse to delete
+     * @throws WarehouseNotFoundException if warehouse doesn't exist
+     */
+    public void deleteWarehouse(long id) {
+        if (warehouseRepository.findById(id).isPresent()) {
+            warehouseRepository.deleteById(id);
+            return;
+        }
 
+        throw new WarehouseNotFoundException("Warehouse with id " + id + "doesn't exists.");
+    }
 
     /**
      * Get all warehouses
