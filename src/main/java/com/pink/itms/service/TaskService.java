@@ -60,4 +60,15 @@ public class TaskService {
                 .map(taskMapper::toDto)
                 .toList();
     }
+
+    /**
+     * @param taskId
+     * @param taskRequestDTO
+     * @return TaskResponseDTO
+     */
+    public TaskResponseDTO editTask(Long taskId, TaskRequestDTO taskRequestDTO) {
+        Task task = taskValidator.validateUpdate(taskId, taskRequestDTO);
+        Task savedTask = taskRepository.save(task);
+        return taskMapper.toDto(savedTask);
+    }
 }

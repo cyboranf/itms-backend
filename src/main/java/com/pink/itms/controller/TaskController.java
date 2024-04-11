@@ -60,4 +60,15 @@ public class TaskController {
     public ResponseEntity<List<TaskResponseDTO>> getAll() {
         return ResponseEntity.ok(taskService.getAll());
     }
+
+    /**
+     * @param id
+     * @param taskRequestDTO
+     * @return edited task
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<TaskResponseDTO> editTask(@PathVariable Long id, @RequestBody TaskRequestDTO taskRequestDTO) {
+        TaskResponseDTO responseDTO = taskService.editTask(id, taskRequestDTO);
+        return ResponseEntity.ok(responseDTO);
+    }
 }
