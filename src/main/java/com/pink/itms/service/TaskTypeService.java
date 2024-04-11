@@ -2,17 +2,15 @@ package com.pink.itms.service;
 
 import com.pink.itms.dto.taskType.TaskTypeRequestDTO;
 import com.pink.itms.dto.taskType.TaskTypeResponseDTO;
-import com.pink.itms.exception.taskType.ExistingNameException;
+import com.pink.itms.exception.taskType.ExistingTaskTypeNameException;
 import com.pink.itms.exception.taskType.TaskTypeNotFoundException;
 import com.pink.itms.mapper.TaskTypeMapper;
 import com.pink.itms.model.TaskType;
-import com.pink.itms.repository.TaskRepository;
 import com.pink.itms.repository.TaskTypeRepository;
 import com.pink.itms.validation.TaskTypeValidator;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +32,7 @@ public class TaskTypeService {
      *
      * @param taskTypeRequestDTO request object for entity creation
      * @return {@link TaskTypeResponseDTO} response from created Entity
-     * @throws com.pink.itms.exception.taskType.ExistingNameException if type with this name already exists
+     * @throws ExistingTaskTypeNameException if type with this name already exists
      */
     public TaskTypeResponseDTO createTaskType(TaskTypeRequestDTO taskTypeRequestDTO) {
         taskTypeValidator.taskTypeValidation(taskTypeRequestDTO);
@@ -67,7 +65,7 @@ public class TaskTypeService {
      */
     public TaskTypeResponseDTO editTaskType(Long id, TaskTypeRequestDTO taskTypeRequestDTO) {
         if (taskTypeRepository.findByName(taskTypeRequestDTO.getName()).isPresent()) {
-            throw new ExistingNameException("Task type " + taskTypeRequestDTO.getName() + " already exist.");
+            throw new ExistingTaskTypeNameException("Task type " + taskTypeRequestDTO.getName() + " already exist.");
         }
 
         TaskType taskType = taskTypeRepository.getById(id);

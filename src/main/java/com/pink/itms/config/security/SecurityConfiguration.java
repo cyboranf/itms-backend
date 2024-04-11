@@ -41,7 +41,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/swagger-ui/**", "/swagger-resources/**", "/v2/api-docs", "/v3/api-docs/**", "/webjars/**")
                 .permitAll()
-
+                // TODO: Przelecieć po wszystkich Controllerach i dodać odpowiednie ścieżki (ustalić co jakiej roli wymaga)
                 .antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/api/auth").permitAll()
                 .antMatchers("/api/login").permitAll()

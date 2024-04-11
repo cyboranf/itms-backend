@@ -1,17 +1,10 @@
 package com.pink.itms.service;
 
-import com.pink.itms.dto.taskType.TaskTypeRequestDTO;
-import com.pink.itms.dto.taskType.TaskTypeResponseDTO;
 import com.pink.itms.dto.warehouse.WarehouseRequestDTO;
 import com.pink.itms.dto.warehouse.WarehouseResponseDTO;
-import com.pink.itms.exception.product.ProductNotFoundException;
-import com.pink.itms.exception.taskType.ExistingNameException;
 import com.pink.itms.exception.warehouse.WarehouseNotFoundException;
 import com.pink.itms.mapper.WarehouseMapper;
-import com.pink.itms.model.Product;
-import com.pink.itms.model.TaskType;
 import com.pink.itms.model.Warehouse;
-import com.pink.itms.repository.ProductRepository;
 import com.pink.itms.repository.WarehouseRepository;
 import com.pink.itms.validation.WarehouseValidator;
 import org.springframework.stereotype.Service;
@@ -27,8 +20,6 @@ public class WarehouseService {
     private final WarehouseRepository warehouseRepository;
     private final WarehouseMapper warehouseMapper;
     private final WarehouseValidator warehouseValidator;
-
-    //TODO: Back to other services and implement the methods to getAll() entities
 
     public WarehouseService(WarehouseRepository warehouseRepository, WarehouseMapper warehouseMapper, WarehouseValidator warehouseValidator) {
         this.warehouseRepository = warehouseRepository;

@@ -1,7 +1,7 @@
 package com.pink.itms.validation;
 
 import com.pink.itms.dto.taskType.TaskTypeRequestDTO;
-import com.pink.itms.exception.taskType.ExistingNameException;
+import com.pink.itms.exception.taskType.ExistingTaskTypeNameException;
 import com.pink.itms.repository.TaskTypeRepository;
 import org.springframework.stereotype.Component;
 
@@ -13,11 +13,11 @@ public class TaskTypeValidator {
     /**
      * Validate TaskTypeRequestDTO before creation
      * @param taskTypeRequestDTO    Object to validate
-     * @throws ExistingNameException
+     * @throws ExistingTaskTypeNameException
      */
     public void taskTypeValidation(TaskTypeRequestDTO taskTypeRequestDTO) {
         if (taskTypeRepository.findByName(taskTypeRequestDTO.getName()).isPresent()){
-            throw new ExistingNameException("Task type " + taskTypeRequestDTO.getName() + " already exists.");
+            throw new ExistingTaskTypeNameException("Task type " + taskTypeRequestDTO.getName() + " already exists.");
         }
     }
 }
