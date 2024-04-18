@@ -9,4 +9,5 @@ public interface TaskTypeRepository extends JpaRepository<TaskType, Long> {
     Optional<TaskType> findByName(String name);
 
     void deleteById(Long aLong);
+    TaskType getById(Long along);
 }

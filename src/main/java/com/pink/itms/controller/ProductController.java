@@ -42,11 +42,21 @@ public class ProductController {
         }
     }
 
+    @PutMapping("/products/{id}")
+    public ResponseEntity<?> editProduct(@PathVariable long id, @RequestBody ProductRequestDTO requestDTO) {
+        try {
+            ProductResponseDTO responseDTO = productService.editProduct(id, requestDTO);
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+
     /**
      * @return list of all products
      */
     @GetMapping("/all")
     public ResponseEntity<List<ProductResponseDTO>> getAll() {
         return ResponseEntity.ok(productService.getAll());
+
     }
 }
