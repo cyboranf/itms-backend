@@ -7,9 +7,16 @@ import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
+
 @Component
 public class TaskMapper {
+    private final UserMapper userMapper;
+    private final ProductMapper productMapper;
 
+    public TaskMapper(UserMapper userMapper, ProductMapper productMapper) {
+        this.userMapper = userMapper;
+        this.productMapper = productMapper;
+    }
     public Task ToEntity(TaskRequestDTO taskRequestDTO) {
         Task task = new Task();
         task.setId(taskRequestDTO.getId());
@@ -36,9 +43,26 @@ public class TaskMapper {
         responseDTO.setCreationDate(task.getCreationDate());
         responseDTO.setStartDate(task.getStartDate());
         responseDTO.setEndDate(task.getEndDate());
-        responseDTO.setUserIds(task.getUsers().stream().map(user -> user.getId()).collect(Collectors.toSet()));
-        responseDTO.setProductIds(task.getProducts().stream().map(product -> product.getId()).collect(Collectors.toSet()));
-        responseDTO.setWarehouseIds(task.getWarehouses().stream().map(warehouse -> warehouse.getId()).collect(Collectors.toSet()));
+
+        if (task.getUsers() != null) {
+            responseDTO.setUsers(task.getUsers().stream()
+                    .map(userMapper::entityToDtoWithoutTasks)
+                    .collect(Collectors.toSet()));
+        }
+
+        if (task.getProducts() != null) {
+            responseDTO.setProducts(task.getProducts().stream()
+                    .map(productMapper::toDto)
+                    .collect(Collectors.toSet()));
+        }
+
+        //TODO jak warehouse bedzie istnial
+//        if (task.getWarehouses() != null) {
+//            responseDTO.setWarehouseIds(task.getWarehouses().stream()
+//                    .map(warehouse -> warehouse.getId())
+//                    .collect(Collectors.toSet()));
+//        }
+
         return responseDTO;
     }
 }

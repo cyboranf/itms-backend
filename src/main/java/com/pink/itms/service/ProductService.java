@@ -9,6 +9,7 @@ import com.pink.itms.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @Transactional
@@ -39,6 +40,10 @@ public class ProductService {
      *
      * @param id id of product to delete
      * @throws ProductNotFoundException if product doesn't exist if product repository
+     * Deletes product with given id
+     *
+     * @param id id of product to delete
+     * @throws ProductNotFoundException if product doesn't exist
      */
     public void deleteProduct(long id) {
         if (productRepository.findById(id).isPresent()) {
@@ -72,4 +77,13 @@ public class ProductService {
         return productMapper.toDto(product);
     }
 
+     * Returns all products
+     * @return list of all products
+     */
+    public List<ProductResponseDTO> getAll() {
+        return productRepository.findAll()
+                .stream()
+                .map(productMapper::toDto)
+                .toList();
+    }
 }

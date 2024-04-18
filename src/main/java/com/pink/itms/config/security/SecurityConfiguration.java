@@ -41,17 +41,24 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/swagger-ui/**", "/swagger-resources/**", "/v2/api-docs", "/v3/api-docs/**", "/webjars/**")
                 .permitAll()
-
+                // TODO: Przelecieć po wszystkich Controllerach i dodać odpowiednie ścieżki (ustalić co jakiej roli wymaga)
                 .antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/api/auth").permitAll()
                 .antMatchers("/api/login").permitAll()
                 .antMatchers("/api/register").permitAll()
+
+                .antMatchers("/api/user/edit/{userId}").permitAll()
+
+                .antMatchers("/api/tasks/**").permitAll()
 
                 .antMatchers("/api/tasks/types").permitAll()
                 .antMatchers("/api/tasks/types/{id}").permitAll()
 
                 .antMatchers("/api/products").permitAll()
                 .antMatchers("/api/products/{id}").permitAll()
+
+                .antMatchers("/api/warehouse").permitAll()
+                .antMatchers("/api/warehouse/{id}").permitAll()
 
                 .anyRequest().authenticated()
                 .and()
