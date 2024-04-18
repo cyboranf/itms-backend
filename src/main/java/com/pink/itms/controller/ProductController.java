@@ -2,6 +2,7 @@ package com.pink.itms.controller;
 
 import com.pink.itms.dto.product.ProductRequestDTO;
 import com.pink.itms.dto.product.ProductResponseDTO;
+import com.pink.itms.exception.product.ProductNotFoundException;
 import com.pink.itms.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,9 +55,24 @@ public class ProductController {
     /**
      * @return list of all products
      */
-    @GetMapping("/all")
+    @GetMapping("")
     public ResponseEntity<List<ProductResponseDTO>> getAll() {
         return ResponseEntity.ok(productService.getAll());
 
+    }
+
+    /**
+     * returns single product by id
+     *
+     * @param id id of product to be found
+     * @return single product response entity
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getSingle(@PathVariable long id) {
+        try {
+            return ResponseEntity.ok(productService.getSingle(id));
+        } catch (ProductNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

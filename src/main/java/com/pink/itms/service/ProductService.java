@@ -78,6 +78,7 @@ public class ProductService {
     }
 
      * Returns all products
+     *
      * @return list of all products
      */
     public List<ProductResponseDTO> getAll() {
@@ -85,5 +86,18 @@ public class ProductService {
                 .stream()
                 .map(productMapper::toDto)
                 .toList();
+    }
+
+    /**
+     * Returns product with given ID
+     *
+     * @param id id of product to find
+     * @return {@link ProductResponseDTO} - found product
+     * @throws ProductNotFoundException in case given product can't be found
+     */
+    public ProductResponseDTO getSingle(long id) {
+        productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product with id " + id + " not found"));
+
+        return productMapper.toDto(productRepository.getById(id));
     }
 }
