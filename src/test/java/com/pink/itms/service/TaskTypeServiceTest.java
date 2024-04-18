@@ -29,6 +29,9 @@ class TaskTypeServiceTest {
     @Mock
     private TaskTypeValidator taskTypeValidator;
 
+    @Mock
+    private TaskTypeRequestDTO requestMock;
+
     @InjectMocks
     private TaskTypeService taskTypeService;
 
@@ -59,10 +62,12 @@ class TaskTypeServiceTest {
 
     @Test
     void deleteTaskType() {
+
     }
 
     @Test
     void editTaskType() {
+
 
     }
 
