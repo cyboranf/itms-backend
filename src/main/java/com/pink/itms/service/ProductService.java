@@ -77,7 +77,7 @@ public class ProductService {
         return productMapper.toDto(product);
     }
 
-     * Returns all products
+     /** Returns all products
      *
      * @return list of all products
      */

@@ -51,10 +51,12 @@ public class ProductController {
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
-
+    }
     /**
      * @return list of all products
+     *
      */
+
     @GetMapping("")
     public ResponseEntity<List<ProductResponseDTO>> getAll() {
         return ResponseEntity.ok(productService.getAll());
