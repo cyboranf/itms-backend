@@ -27,7 +27,7 @@ public class WarehouseMapper {
         warehouse.setProduct(productRepository.findById(warehouseRequestDTO.getProductId()).orElseThrow(() -> new ProductNotFoundException("Can not found Product with id = " + warehouseRequestDTO.getProductId())));
         return warehouse;
     }
-
+ 
     public WarehouseResponseDTO toDTO(Warehouse warehouse) {
         WarehouseResponseDTO warehouseResponseDTO = new WarehouseResponseDTO();
         warehouseResponseDTO.setId(warehouse.getId());
@@ -37,12 +37,17 @@ public class WarehouseMapper {
         warehouseResponseDTO.setSpaceHeight(warehouse.getSpaceHeight());
         warehouseResponseDTO.setSpaceWidth(warehouse.getSpaceWidth());
         warehouseResponseDTO.setSpaceLength(warehouse.getSpaceLength());
-        if (warehouse.getProduct() == null) {
-            throw new WarehouseNotFoundException("Can not found Warehouse with id = " + warehouse.getId());
+
+        if (warehouse.getProduct() != null) {
+            warehouseResponseDTO.setProductId(warehouse.getProduct().getId());
+            warehouseResponseDTO.setProductName(warehouse.getProduct().getName());
+            warehouseResponseDTO.setProductCode(warehouse.getProduct().getCode());
+        } else {
+            warehouseResponseDTO.setProductId(null);
+            warehouseResponseDTO.setProductName("No Product");
+            warehouseResponseDTO.setProductCode("N/A");
         }
-        warehouseResponseDTO.setProductId(warehouse.getProduct().getId());
-        warehouseResponseDTO.setProductName(warehouse.getProduct().getName());
-        warehouseResponseDTO.setProductCode(warehouse.getProduct().getCode());
+
         return warehouseResponseDTO;
     }
 }
