@@ -5,6 +5,7 @@ import com.pink.itms.dto.taskType.TaskTypeRequestDTO;
 import com.pink.itms.dto.taskType.TaskTypeResponseDTO;
 import com.pink.itms.dto.warehouse.WarehouseRequestDTO;
 import com.pink.itms.dto.warehouse.WarehouseResponseDTO;
+import com.pink.itms.exception.product.ProductNotFoundException;
 import com.pink.itms.service.WarehouseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,13 +58,19 @@ public class WarehouseController {
             return ResponseEntity.notFound().build();
         }
     }
-
     /**
      * Get all warehouses
      *
      * @return List of WarehouseResponseDTO
      */
+    @GetMapping("")
     public ResponseEntity<List<WarehouseResponseDTO>> getAll() {
-        return ResponseEntity.ok(warehouseService.getAll());
+        try {
+            List<WarehouseResponseDTO> warehouses = warehouseService.getAll();
+            return ResponseEntity.ok(warehouses);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
+
 }

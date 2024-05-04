@@ -60,7 +60,6 @@ public class ProductController {
     @GetMapping("")
     public ResponseEntity<List<ProductResponseDTO>> getAll() {
         return ResponseEntity.ok(productService.getAll());
-
     }
 
     /**
