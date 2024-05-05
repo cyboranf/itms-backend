@@ -2,6 +2,7 @@ package com.pink.itms.service;
 
 import com.pink.itms.dto.user.UserRequestDTO;
 import com.pink.itms.dto.user.UserResponseDTO;
+import com.pink.itms.dto.user.UserResponseWithoutTasksDTO;
 import com.pink.itms.exception.user.UserNotFoundException;
 import com.pink.itms.mapper.UserMapper;
 import com.pink.itms.model.Task;
@@ -38,10 +39,10 @@ public class UserService {
      * Get all users
      * @return List of UserResponseDTO
      */
-    public List<UserResponseDTO> getAll() {
+    public List<UserResponseWithoutTasksDTO> getAll() {
         return userRepository.findAll()
                 .stream()
-                .map(userMapper::entityToDto)
+                .map(userMapper::entityToDtoWithoutTasks)
                 .toList();
     }
 }
