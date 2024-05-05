@@ -30,6 +30,7 @@ public class User {
     private String email;
     @Column(name = "phone_number")
     private String phoneNumber;
+    private Boolean isActive = true;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"),

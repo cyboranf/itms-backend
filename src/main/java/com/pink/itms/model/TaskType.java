@@ -13,6 +13,7 @@ public class TaskType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private Boolean isActive = true;
     @OneToMany(mappedBy = "type")
     private Set<Task> tasks;
 }

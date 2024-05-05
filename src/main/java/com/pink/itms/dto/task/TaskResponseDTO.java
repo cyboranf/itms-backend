@@ -20,4 +20,5 @@ public class TaskResponseDTO {
     private Set<UserResponseWithoutTasksDTO> users;
     private Set<ProductResponseDTO> products;
     private Set<WarehouseResponseDTO> warehouses;
+    private Boolean isActive;
 }

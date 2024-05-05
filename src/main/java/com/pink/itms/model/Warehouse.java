@@ -23,7 +23,10 @@ public class Warehouse {
     private int spaceWidth;
     @Column(name = "space_length")
     private int spaceLength;
+    private Boolean isActive = true;
+
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "product_id")
     private Product product;
+
 }

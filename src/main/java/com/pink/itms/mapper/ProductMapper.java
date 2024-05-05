@@ -22,6 +22,7 @@ public class ProductMapper {
         product.setLength(productRequestDTO.getLength());
         product.setWidth(productRequestDTO.getWidth());
         product.setWeight(productRequestDTO.getWeight());
+        product.setIsActive(true);
 
         return product;
     }
@@ -35,6 +36,7 @@ public class ProductMapper {
         productResponseDTO.setLength(product.getLength());
         productResponseDTO.setWidth(product.getWidth());
         productResponseDTO.setWeight(product.getWeight());
+        productResponseDTO.setIsActive(product.getIsActive());
 
         return productResponseDTO;
     }

@@ -73,12 +73,10 @@ public class WarehouseService {
      * @throws WarehouseNotFoundException if warehouse doesn't exist
      */
     public void deleteWarehouse(long id) {
-        if (warehouseRepository.findById(id).isPresent()) {
-            warehouseRepository.deleteById(id);
-            return;
-        }
-
-        throw new WarehouseNotFoundException("Warehouse with id " + id + "doesn't exists.");
+        Warehouse warehouse = warehouseRepository.findById(id)
+                .orElseThrow(() -> new WarehouseNotFoundException("Warehouse with id " + id + " doesn't exist."));
+        warehouse.setIsActive(false);
+        warehouseRepository.save(warehouse);
     }
 
     /**
@@ -87,7 +85,7 @@ public class WarehouseService {
      * @return List of WarehouseResponseDTO
      */
     public List<WarehouseResponseDTO> getAll() {
-        return warehouseRepository.findAll()
+        return warehouseRepository.findAllByIsActiveTrue()
                 .stream()
                 .map(warehouseMapper::toDto)
                 .toList();

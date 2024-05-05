@@ -21,6 +21,7 @@ public class UserMapper {
     public User dtoToEntity(UserRequestDTO userRequestDTO) {
         User user = new User();
         BeanUtils.copyProperties(userRequestDTO, user);
+        user.setIsActive(true);
         return user;
     }
 
@@ -28,6 +29,7 @@ public class UserMapper {
         UserResponseDTO userResponseDTO = new UserResponseDTO();
         BeanUtils.copyProperties(user, userResponseDTO);
         userResponseDTO.setTasks(userRepository.findById(user.getId()).orElseThrow(() -> new UserNotFoundException("User not found")).getTasks());
+        userResponseDTO.setIsActive(user.getIsActive());
 
         return userResponseDTO;
     }
@@ -41,6 +43,8 @@ public class UserMapper {
         userResponseWithoutTasksDTO.setPesel(user.getPesel());
         userResponseWithoutTasksDTO.setEmail(user.getEmail());
         userResponseWithoutTasksDTO.setPhoneNumber(user.getPhoneNumber());
+        userResponseWithoutTasksDTO.setIsActive(user.getIsActive());
+
         return userResponseWithoutTasksDTO;
     }
 
