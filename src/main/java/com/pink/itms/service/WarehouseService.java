@@ -37,7 +37,7 @@ public class WarehouseService {
         Warehouse warehouse = warehouseMapper.toEntity(warehouseRequestDTO);
         Warehouse savedWarehouse = warehouseRepository.save(warehouse);
 
-        return warehouseMapper.toDTO(savedWarehouse);
+        return warehouseMapper.toDto(savedWarehouse);
     }
 
     /**
@@ -63,7 +63,7 @@ public class WarehouseService {
         warehouse.setSpaceWidth(warehouseRequestDTO.getSpaceWidth());
         warehouse.setSpaceLength(warehouseRequestDTO.getSpaceLength());
 
-        return warehouseMapper.toDTO(warehouse);
+        return warehouseMapper.toDto(warehouse);
     }
 
     /**
@@ -89,7 +89,7 @@ public class WarehouseService {
     public List<WarehouseResponseDTO> getAll() {
         return warehouseRepository.findAll()
                 .stream()
-                .map(warehouseMapper::toDTO)
+                .map(warehouseMapper::toDto)
                 .toList();
     }
 

@@ -29,7 +29,7 @@ public class TaskService {
     public TaskResponseDTO createTask(TaskRequestDTO taskRequestDTO) {
         taskValidator.validateCreate(taskRequestDTO);
 
-        Task task = taskMapper.ToEntity(taskRequestDTO);
+        Task task = taskMapper.toEntity(taskRequestDTO);
         task.setCreationDate(LocalDateTime.now());
 
         Task savedTask = taskRepository.save(task);

@@ -28,7 +28,7 @@ public class WarehouseMapper {
         return warehouse;
     }
  
-    public WarehouseResponseDTO toDTO(Warehouse warehouse) {
+    public WarehouseResponseDTO toDto(Warehouse warehouse) {
         WarehouseResponseDTO warehouseResponseDTO = new WarehouseResponseDTO();
         warehouseResponseDTO.setId(warehouse.getId());
         warehouseResponseDTO.setBuilding(warehouse.getBuilding());

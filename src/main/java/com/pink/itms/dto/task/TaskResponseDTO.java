@@ -1,12 +1,11 @@
 package com.pink.itms.dto.task;
+import com.pink.itms.dto.product.ProductResponseDTO;
 import com.pink.itms.dto.user.UserResponseWithoutTasksDTO;
+import com.pink.itms.dto.warehouse.WarehouseResponseDTO;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.Set;
-
-import com.pink.itms.dto.product.ProductResponseDTO;
-import com.pink.itms.dto.user.UserResponseDTO;
 
 @Data
 public class TaskResponseDTO {
@@ -20,6 +19,5 @@ public class TaskResponseDTO {
     private LocalDateTime endDate;
     private Set<UserResponseWithoutTasksDTO> users;
     private Set<ProductResponseDTO> products;
-    //TODO jak warehouse bedzie istnial
-//    private Set<WarehouseResponseDTO> warehouses;
+    private Set<WarehouseResponseDTO> warehouses;
 }
