@@ -3,6 +3,7 @@ package com.pink.itms.controller;
 import com.pink.itms.dto.user.UserRequestDTO;
 import com.pink.itms.dto.user.UserResponseDTO;
 import com.pink.itms.dto.user.UserResponseWithoutTasksDTO;
+import com.pink.itms.dto.warehouse.WarehouseResponseDTO;
 import com.pink.itms.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,20 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> editUser(@PathVariable Long userId, @RequestBody UserRequestDTO userRequestDTO) {
         UserResponseDTO responseDTO = userService.editUser(userId, userRequestDTO);
         return ResponseEntity.ok(responseDTO);
+    }
+
+    /**
+     * @param id
+     * @return {@link UserResponseDTO} - response from deleted user
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable long id) {
+        try {
+            userService.deleteUser(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     /**

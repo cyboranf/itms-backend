@@ -58,6 +58,7 @@ public class WarehouseController {
             return ResponseEntity.notFound().build();
         }
     }
+
     /**
      * Get all warehouses
      *

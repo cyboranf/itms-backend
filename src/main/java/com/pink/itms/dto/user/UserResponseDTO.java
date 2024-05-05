@@ -15,4 +15,5 @@ public class UserResponseDTO {
     private String email;
     private String phoneNumber;
     private Set<Task> tasks;
+    private Boolean isActive;
 }

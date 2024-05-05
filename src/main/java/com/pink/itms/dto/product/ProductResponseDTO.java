@@ -11,4 +11,5 @@ public class ProductResponseDTO {
     private double height;
     private double length;
     private double weight;
+    private Boolean isActive;
 }

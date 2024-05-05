@@ -4,8 +4,10 @@ import com.pink.itms.dto.taskType.TaskTypeRequestDTO;
 import com.pink.itms.dto.taskType.TaskTypeResponseDTO;
 import com.pink.itms.exception.taskType.ExistingTaskTypeNameException;
 import com.pink.itms.exception.taskType.TaskTypeNotFoundException;
+import com.pink.itms.exception.user.UserNotFoundException;
 import com.pink.itms.mapper.TaskTypeMapper;
 import com.pink.itms.model.TaskType;
+import com.pink.itms.model.User;
 import com.pink.itms.repository.TaskTypeRepository;
 import com.pink.itms.validation.TaskTypeValidator;
 import org.springframework.stereotype.Service;
@@ -49,11 +51,10 @@ public class TaskTypeService {
      * @throws TaskTypeNotFoundException if task type doesn't exist
      */
     public void deleteTaskType(long id) {
-        try {
-            taskTypeRepository.deleteById(id);
-        } catch (Exception e) {
-            throw new TaskTypeNotFoundException("Task type with id " + id + " doesn't exists.");
-        }
+        TaskType taskType = taskTypeRepository.findById(id)
+                .orElseThrow(() -> new TaskTypeNotFoundException("Task type with id " + id + " doesn't exist."));
+        taskType.setIsActive(false);
+        taskTypeRepository.save(taskType);
     }
 
     /**
@@ -81,7 +82,7 @@ public class TaskTypeService {
      */
     public List<TaskTypeResponseDTO> getAll() {
         List<TaskTypeResponseDTO> responseDTOList = new ArrayList<>();
-        List<TaskType> entitiesList = taskTypeRepository.findAll();
+        List<TaskType> entitiesList = taskTypeRepository.findAllByIsActiveTrue();
 
         for (int i = 0; i < entitiesList.size(); i++) {
             responseDTOList.add(taskTypeMapper.toDto(entitiesList.get(i)));

@@ -31,6 +31,8 @@ public class Task {
     private LocalDateTime startDate;
     @Column(name = "end_date")
     private LocalDateTime endDate;
+    private Boolean isActive = true;
+
 
     @JsonBackReference
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "tasks")

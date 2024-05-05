@@ -3,7 +3,6 @@ package com.pink.itms.mapper;
 import com.pink.itms.dto.warehouse.WarehouseRequestDTO;
 import com.pink.itms.dto.warehouse.WarehouseResponseDTO;
 import com.pink.itms.exception.product.ProductNotFoundException;
-import com.pink.itms.exception.warehouse.WarehouseNotFoundException;
 import com.pink.itms.model.Warehouse;
 import com.pink.itms.repository.ProductRepository;
 import org.springframework.stereotype.Component;
@@ -24,10 +23,13 @@ public class WarehouseMapper {
         warehouse.setSpaceHeight(warehouseRequestDTO.getSpaceHeight());
         warehouse.setSpaceWidth(warehouseRequestDTO.getSpaceWidth());
         warehouse.setSpaceLength(warehouseRequestDTO.getSpaceLength());
-        warehouse.setProduct(productRepository.findById(warehouseRequestDTO.getProductId()).orElseThrow(() -> new ProductNotFoundException("Can not found Product with id = " + warehouseRequestDTO.getProductId())));
+        warehouse.setProduct(productRepository.findById(warehouseRequestDTO.getProductId())
+                .orElseThrow(() -> new ProductNotFoundException("Cannot find Product with id = " + warehouseRequestDTO.getProductId())));
+
+        warehouse.setIsActive(true);
         return warehouse;
     }
- 
+
     public WarehouseResponseDTO toDto(Warehouse warehouse) {
         WarehouseResponseDTO warehouseResponseDTO = new WarehouseResponseDTO();
         warehouseResponseDTO.setId(warehouse.getId());
@@ -37,6 +39,7 @@ public class WarehouseMapper {
         warehouseResponseDTO.setSpaceHeight(warehouse.getSpaceHeight());
         warehouseResponseDTO.setSpaceWidth(warehouse.getSpaceWidth());
         warehouseResponseDTO.setSpaceLength(warehouse.getSpaceLength());
+        warehouseResponseDTO.setIsActive(warehouse.getIsActive());
 
         if (warehouse.getProduct() != null) {
             warehouseResponseDTO.setProductId(warehouse.getProduct().getId());

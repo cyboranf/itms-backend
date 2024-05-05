@@ -26,6 +26,8 @@ public class TaskMapper {
         task.setDescription(taskRequestDTO.getDescription());
         task.setState(taskRequestDTO.getState());
         task.setPriority(taskRequestDTO.getPriority());
+        task.setIsActive(true);
+
         return task;
     }
 
@@ -39,6 +41,7 @@ public class TaskMapper {
         responseDTO.setCreationDate(task.getCreationDate());
         responseDTO.setStartDate(task.getStartDate());
         responseDTO.setEndDate(task.getEndDate());
+        responseDTO.setIsActive(task.getIsActive());
 
         if (task.getUsers() != null) {
             responseDTO.setUsers(task.getUsers().stream()
@@ -52,7 +55,6 @@ public class TaskMapper {
                     .collect(Collectors.toSet()));
         }
 
-        //TODO jak warehouse bedzie istnial
         if (task.getWarehouses() != null) {
             responseDTO.setWarehouses(task.getWarehouses().stream()
                     .map(warehouseMapper::toDto)

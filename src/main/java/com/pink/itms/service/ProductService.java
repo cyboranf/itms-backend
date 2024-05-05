@@ -3,8 +3,10 @@ package com.pink.itms.service;
 import com.pink.itms.dto.product.ProductRequestDTO;
 import com.pink.itms.dto.product.ProductResponseDTO;
 import com.pink.itms.exception.product.ProductNotFoundException;
+import com.pink.itms.exception.warehouse.WarehouseNotFoundException;
 import com.pink.itms.mapper.ProductMapper;
 import com.pink.itms.model.Product;
+import com.pink.itms.model.Warehouse;
 import com.pink.itms.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -46,12 +48,10 @@ public class ProductService {
      * @throws ProductNotFoundException if product doesn't exist
      */
     public void deleteProduct(long id) {
-        if (productRepository.findById(id).isPresent()) {
-            productRepository.deleteById(id);
-            return;
-        }
-
-        throw new ProductNotFoundException("Product with id " + id + "doesn't exists.");
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new WarehouseNotFoundException("Product with id " + id + " doesn't exist."));
+        product.setIsActive(false);
+        productRepository.save(product);
     }
 
     /**
@@ -82,7 +82,7 @@ public class ProductService {
      * @return list of all products
      */
     public List<ProductResponseDTO> getAll() {
-        return productRepository.findAll()
+        return productRepository.findAllByIsActiveTrue()
                 .stream()
                 .map(productMapper::toDto)
                 .toList();

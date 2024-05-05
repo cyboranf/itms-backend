@@ -2,8 +2,10 @@ package com.pink.itms.service;
 
 import com.pink.itms.dto.task.TaskRequestDTO;
 import com.pink.itms.dto.task.TaskResponseDTO;
+import com.pink.itms.exception.warehouse.WarehouseNotFoundException;
 import com.pink.itms.mapper.TaskMapper;
 import com.pink.itms.model.Task;
+import com.pink.itms.model.Warehouse;
 import com.pink.itms.repository.TaskRepository;
 import com.pink.itms.validation.TaskValidator;
 import org.springframework.stereotype.Service;
@@ -42,11 +44,11 @@ public class TaskService {
         return taskMapper.toDto(task);
     }
 
-    public void deleteTask(Long taskId) {
-        Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new IllegalArgumentException("Task with id = " + taskId + " does not exist"));
-
-        taskRepository.delete(task);
+    public void deleteTask(long id) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new WarehouseNotFoundException("Task with id " + id + " doesn't exist."));
+        task.setIsActive(false);
+        taskRepository.save(task);
     }
 
     /**
@@ -55,7 +57,7 @@ public class TaskService {
      * @return
      */
     public List<TaskResponseDTO> getAll() {
-        return taskRepository.findAll()
+        return taskRepository.findAllByIsActiveTrue()
                 .stream()
                 .map(taskMapper::toDto)
                 .toList();

@@ -10,6 +10,8 @@ public class TaskTypeMapper {
     public TaskType toEntity(TaskTypeRequestDTO taskTypeRequestDTO) {
         TaskType taskType = new TaskType();
         taskType.setName(taskTypeRequestDTO.getName());
+        taskType.setIsActive(true);
+
         return taskType;
     }
 
@@ -17,6 +19,8 @@ public class TaskTypeMapper {
         TaskTypeResponseDTO taskTypeResponseDTO = new TaskTypeResponseDTO();
         taskTypeResponseDTO.setId(taskType.getId());
         taskTypeResponseDTO.setName(taskType.getName());
+        taskTypeResponseDTO.setIsActive(taskType.getIsActive());
+
         return taskTypeResponseDTO;
     }
 }

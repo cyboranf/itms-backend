@@ -22,6 +22,8 @@ public class Product {
     private double height;
     private double length;
     private double weight;
+    private Boolean isActive = true;
+
     @JsonBackReference
     @ManyToMany(mappedBy = "products")
     private Set<Task> tasks;
