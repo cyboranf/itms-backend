@@ -10,12 +10,22 @@ import com.pink.itms.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Component
 public class UserMapper {
     private final UserRepository userRepository;
 
     public UserMapper(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    public static Set<pdf.generator.model.User> toPdfUserSet(Set<UserResponseWithoutTasksDTO> users) {
+        return users.stream()
+                .map(UserMapper::toPdfUser)
+                .collect(Collectors.toSet());
     }
 
     public User dtoToEntity(UserRequestDTO userRequestDTO) {
@@ -48,6 +58,24 @@ public class UserMapper {
         return userResponseWithoutTasksDTO;
     }
 
+    public static pdf.generator.model.User toPdfUser(UserResponseWithoutTasksDTO user) {
+        pdf.generator.model.User pdfUser = new pdf.generator.model.User();
+        pdfUser.setId(user.getId());
+        pdfUser.setUsername(user.getUsername());
+        pdfUser.setName(user.getName());
+        pdfUser.setLastname(user.getLastname());
+        pdfUser.setPesel(user.getPesel());
+        pdfUser.setEmail(user.getEmail());
+        pdfUser.setPhoneNumber(user.getPhoneNumber());
+        pdfUser.setActive(user.getIsActive());
+        return pdfUser;
+    }
+
+    public static List<pdf.generator.model.User> toPdfUserList(List<UserResponseWithoutTasksDTO> users) {
+        return users.stream()
+                .map(UserMapper::toPdfUser)
+                .collect(Collectors.toList());
+    }
 
     public void updateUserFromRequestDTO(UserRequestDTO dto, User user) {
         BeanUtils.copyProperties(dto, user, "id");

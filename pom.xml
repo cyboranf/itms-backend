@@ -115,6 +115,25 @@
 			<version>3.6.0</version>
 			<scope>test</scope>
 		</dependency>
+
+<!--		pdf generator library-->
+		<dependency>
+			<groupId>pdf.generator</groupId>
+			<artifactId>pdf-library</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/libs/itms-library-1.0-SNAPSHOT.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>kernel</artifactId>
+			<version>8.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>layout</artifactId>
+			<version>8.0.2</version>
+		</dependency>
 	</dependencies>
 
 	<build>
