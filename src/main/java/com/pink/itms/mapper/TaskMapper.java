@@ -1,10 +1,15 @@
 package com.pink.itms.mapper;
 
+import com.pink.itms.dto.product.ProductResponseDTO;
 import com.pink.itms.dto.task.TaskRequestDTO;
 import com.pink.itms.dto.task.TaskResponseDTO;
+import com.pink.itms.dto.user.UserResponseWithoutTasksDTO;
+import com.pink.itms.dto.warehouse.WarehouseResponseDTO;
 import com.pink.itms.model.Task;
 import org.springframework.stereotype.Component;
+import pdf.generator.model.Tasks;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -62,5 +67,30 @@ public class TaskMapper {
         }
 
         return responseDTO;
+    }
+
+    public static Tasks toPdfTask(TaskResponseDTO taskDTO) {
+        Tasks task = new Tasks();
+        task.setId(taskDTO.getId());
+        task.setName(taskDTO.getName());
+        task.setDescription(taskDTO.getDescription());
+        task.setState(taskDTO.getState());
+        task.setPriority(taskDTO.getPriority());
+        task.setCreationDate(taskDTO.getCreationDate());
+        task.setStartDate(taskDTO.getStartDate());
+        task.setEndDate(taskDTO.getEndDate());
+        task.setActive(taskDTO.getIsActive());
+
+        task.setUsers(UserMapper.toPdfUserSet(taskDTO.getUsers()));
+        task.setProducts(ProductMapper.toPdfProductSet(taskDTO.getProducts()));
+        task.setWarehouses(WarehouseMapper.toPdfWarehouseSet(taskDTO.getWarehouses()));
+
+        return task;
+    }
+
+    public static List<Tasks> toPdfTaskList(List<TaskResponseDTO> tasks) {
+        return tasks.stream()
+                .map(TaskMapper::toPdfTask)
+                .collect(Collectors.toList());
     }
 }
