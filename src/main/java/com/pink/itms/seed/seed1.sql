@@ -129,9 +129,9 @@ INSERT INTO type (id, name) VALUES
 (7, 'Others');
 
 INSERT INTO task (id, name, description, state, priority, type_id, creation_date, start_date, end_date, is_active) VALUES
-(1, 'Prepare products for shipment', 'Description', 0, 5, 2, '2024-01-14 10:10:00', NULL, NULL, TRUE),
-(2, 'Move products', 'Description', 0, 4, 3, '2024-01-10 10:09:00', NULL, NULL, TRUE),
-(3, 'Prepare products for shipment', 'Description', 1, 6, 2, '2024-01-09 10:12:00', '2024-01-10 09:10:00', NULL, TRUE),
+(1, 'Prepare products for shipment', 'Description', 0, 5, 2, '2024-01-14 10:10:00', '2024-01-10 09:10:00', '2024-01-10 09:10:00', TRUE),
+(2, 'Move products', 'Description', 0, 4, 3, '2024-01-10 10:09:00', '2024-01-10 09:10:00', '2024-01-10 09:10:00', TRUE),
+(3, 'Prepare products for shipment', 'Description', 1, 6, 2, '2024-01-09 10:12:00', '2024-01-10 09:10:00', '2024-01-10 09:10:00', TRUE),
 (4, 'Unload transport', 'Description', 2, 10, 1, '2024-01-01 08:00:00', '2024-01-01 08:01:00', '2024-01-01 09:01:00', TRUE);
 
 INSERT INTO user_task (task_id, user_id) VALUES
