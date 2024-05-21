@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -61,6 +62,30 @@ public class TaskService {
                 .stream()
                 .map(taskMapper::toDto)
                 .toList();
+    }
+
+    public List<TaskResponseDTO> getFilteredTasks(Integer state, Integer priority, Long userId) {
+        List<Task> tasks = taskRepository.findAll();
+
+        if (state != null) {
+            tasks = tasks.stream()
+                    .filter(task -> task.getState().equals(state))
+                    .collect(Collectors.toList());
+        }
+        if (priority != null) {
+            tasks = tasks.stream()
+                    .filter(task -> task.getPriority().equals(priority))
+                    .collect(Collectors.toList());
+        }
+        if (userId != null) {
+            tasks = tasks.stream()
+                    .filter(task -> task.getUsers().stream().anyMatch(user -> user.getId().equals(userId)))
+                    .collect(Collectors.toList());
+        }
+
+        return tasks.stream()
+                .map(taskMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     /**
