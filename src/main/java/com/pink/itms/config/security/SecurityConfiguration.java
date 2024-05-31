@@ -64,11 +64,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/warehouse").permitAll()
                 .antMatchers("/api/warehouse/{id}").permitAll()
 
-                .antMatchers("/generate-user-report").permitAll()
-                .antMatchers("/generate-warehouse-report").permitAll()
-                .antMatchers("/generate-items-report").permitAll()
-                .antMatchers("/generate-task-report").permitAll()
-                .antMatchers("/generate-task-report/{id}").permitAll()
+                .antMatchers("/api//generate-user-report").permitAll()
+                .antMatchers("/api/generate-warehouse-report").permitAll()
+                .antMatchers("/api/generate-items-report").permitAll()
+                .antMatchers("/api/generate-task-report").permitAll()
+                .antMatchers("/api/generate-task-report/{id}").permitAll()
 
                 .anyRequest().authenticated()
                 .and()

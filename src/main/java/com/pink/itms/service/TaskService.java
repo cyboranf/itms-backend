@@ -64,7 +64,7 @@ public class TaskService {
                 .toList();
     }
 
-    public List<TaskResponseDTO> getFilteredTasks(Integer state, Integer priority, Long userId) {
+    public List<TaskResponseDTO> getFilteredTasks(Integer state, Integer priority, Long userId, Long taskId) {
         List<Task> tasks = taskRepository.findAll();
 
         if (state != null) {
@@ -80,6 +80,11 @@ public class TaskService {
         if (userId != null) {
             tasks = tasks.stream()
                     .filter(task -> task.getUsers().stream().anyMatch(user -> user.getId().equals(userId)))
+                    .collect(Collectors.toList());
+        }
+        if (taskId != null) {
+            tasks = tasks.stream()
+                    .filter(task -> task.getUsers().stream().anyMatch(user -> task.getId().equals(taskId)))
                     .collect(Collectors.toList());
         }
 
