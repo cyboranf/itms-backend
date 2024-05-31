@@ -18,10 +18,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pdf.generator.PdfGeneratorService;
 import pdf.generator.model.Tasks;
 
@@ -29,7 +26,7 @@ import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
+@RequestMapping("/api")
 @RestController
 public class PdfController {
 
@@ -126,12 +123,13 @@ public class PdfController {
             @RequestParam(value = "state", required = false) Integer state,
             @RequestParam(value = "priority", required = false) Integer priority,
             @RequestParam(value = "userId", required = false) Long userId,
+            @RequestParam(value = "taskId", required = false) Long taskId,
             @RequestParam(value = "includeUsers", required = false, defaultValue = "false") boolean includeUsers,
             @RequestParam(value = "includeProducts", required = false, defaultValue = "false") boolean includeProducts,
             @RequestParam(value = "includeWarehouses", required = false, defaultValue = "false") boolean includeWarehouses,
             @RequestParam(value = "includePieChart", required = false, defaultValue = "false") boolean includePieChart) {
 
-        List<TaskResponseDTO> tasks = taskService.getFilteredTasks(state, priority, userId);
+        List<TaskResponseDTO> tasks = taskService.getFilteredTasks(state, priority, userId, taskId);
         List<Tasks> pdfTasks = TaskMapper.toPdfTaskList(tasks);
 
         ByteArrayInputStream bis = pdfReportGenerator.generateTaskReport(pdfTasks, includeUsers, includeProducts, includeWarehouses, includePieChart);
