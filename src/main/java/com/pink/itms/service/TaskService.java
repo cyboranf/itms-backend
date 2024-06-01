@@ -2,10 +2,14 @@ package com.pink.itms.service;
 
 import com.pink.itms.dto.task.TaskRequestDTO;
 import com.pink.itms.dto.task.TaskResponseDTO;
+import com.pink.itms.exception.product.ProductNotFoundException;
+import com.pink.itms.exception.task.TaskNotFoundException;
 import com.pink.itms.exception.warehouse.WarehouseNotFoundException;
 import com.pink.itms.mapper.TaskMapper;
+import com.pink.itms.model.Product;
 import com.pink.itms.model.Task;
 import com.pink.itms.model.Warehouse;
+import com.pink.itms.repository.ProductRepository;
 import com.pink.itms.repository.TaskRepository;
 import com.pink.itms.validation.TaskValidator;
 import org.springframework.stereotype.Service;
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,11 +27,13 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final TaskValidator taskValidator;
     private final TaskMapper taskMapper;
+    private final ProductRepository productRepository;
 
-    public TaskService(TaskRepository taskRepository, TaskValidator taskValidator, TaskMapper taskMapper) {
+    public TaskService(TaskRepository taskRepository, TaskValidator taskValidator, TaskMapper taskMapper, ProductRepository productRepository) {
         this.taskRepository = taskRepository;
         this.taskValidator = taskValidator;
         this.taskMapper = taskMapper;
+        this.productRepository = productRepository;
     }
 
     public TaskResponseDTO createTask(TaskRequestDTO taskRequestDTO) {
@@ -102,5 +109,23 @@ public class TaskService {
         Task task = taskValidator.validateUpdate(taskId, taskRequestDTO);
         Task savedTask = taskRepository.save(task);
         return taskMapper.toDto(savedTask);
+    }
+
+    /**
+     * attaches product by given id to task of given id if said connection already exists do nothing.
+     *
+     * @param taskId id of task to be attached
+     * @param productId id of product to be attached
+     */
+    public void attachProduct(Long taskId, Long productId) {
+        Task task = taskRepository.findById(taskId).orElseThrow(() -> new TaskNotFoundException("Task Not Found"));
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException("Product Not Found"));
+
+        Set<Product> productSet = task.getProducts();
+        productSet.add(product);
+        task.setProducts(productSet);
+
+        taskRepository.save(task);
+
     }
 }
