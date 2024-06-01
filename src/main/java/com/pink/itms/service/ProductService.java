@@ -2,6 +2,7 @@ package com.pink.itms.service;
 
 import com.pink.itms.dto.product.ProductRequestDTO;
 import com.pink.itms.dto.product.ProductResponseDTO;
+import com.pink.itms.dto.warehouse.WarehouseResponseDTO;
 import com.pink.itms.exception.product.ProductNotFoundException;
 import com.pink.itms.exception.warehouse.WarehouseNotFoundException;
 import com.pink.itms.mapper.ProductMapper;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -99,5 +101,27 @@ public class ProductService {
         productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product with id " + id + " not found"));
 
         return productMapper.toDto(productRepository.getById(id));
+    }
+
+    public List<ProductResponseDTO> getFilteredProduct(String name, String code) {
+
+        List<ProductResponseDTO> products = productRepository.findAllByIsActiveTrue()
+                .stream()
+                .map(productMapper::toDto)
+                .collect(Collectors.toList());
+
+
+        if (name != null && !name.isEmpty()) {
+            products = products.stream()
+                    .filter(product -> product.getName().equalsIgnoreCase(name))
+                    .collect(Collectors.toList());
+        }
+        if (code != null && !code.isEmpty()) {
+            products = products.stream()
+                    .filter(product -> product.getCode().equalsIgnoreCase(code))
+                    .collect(Collectors.toList());
+        }
+
+        return products;
     }
 }

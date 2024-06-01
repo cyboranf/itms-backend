@@ -85,14 +85,20 @@ public class PdfController {
     }
 
     @GetMapping("/generate-warehouse-report")
-    public ResponseEntity<InputStreamResource> generateWarehouseReport() {
-        List<WarehouseResponseDTO> warehouse = warehouseService.getAll();
-        List<pdf.generator.model.Warehouse> pdfWarehouse = WarehouseMapper.toPdfWarehouseList(warehouse);
+    public ResponseEntity<InputStreamResource> generateWarehouseReport(
+            @RequestParam(value = "building", required = false) String building,
+            @RequestParam(value = "zone", required = false) String zone,
+            @RequestParam(value = "spaceId", required = false) Long spaceId
 
-        ByteArrayInputStream bis = pdfReportGenerator.generateWarehouseReport(pdfWarehouse);
+            ) {
+
+        List<WarehouseResponseDTO> warehouses = warehouseService.getFilteredWarehouses(building, zone, spaceId);
+        List<pdf.generator.model.Warehouse> pdfWarehouses = WarehouseMapper.toPdfWarehouseList(warehouses);
+
+        ByteArrayInputStream bis = pdfReportGenerator.generateWarehouseReport(pdfWarehouses);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Disposition", "inline; filename=user-report.pdf");
+        headers.add("Content-Disposition", "inline; filename=warehouse-report.pdf");
 
         return ResponseEntity
                 .ok()
@@ -102,15 +108,20 @@ public class PdfController {
     }
 
     @GetMapping("/generate-items-report")
-    public ResponseEntity<InputStreamResource> generateItemsReport() {
-        List<ProductResponseDTO> products = productService.getAll();
+    public ResponseEntity<InputStreamResource> generateItemsReport(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "code", required = false) String code) {
+
+        List<ProductResponseDTO> products = productService.getFilteredProduct(name, code);
         List<pdf.generator.model.Product> pdfProducts = ProductMapper.toPdfProductList(products);
+
 
         ByteArrayInputStream bis = pdfReportGenerator.generateProductReport(pdfProducts);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "inline; filename=user-report.pdf");
 
+        // Zwrócenie odpowiedzi zawierającej raport PDF
         return ResponseEntity
                 .ok()
                 .headers(headers)

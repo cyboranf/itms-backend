@@ -13,6 +13,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -90,5 +91,38 @@ public class WarehouseService {
                 .map(warehouseMapper::toDto)
                 .toList();
     }
+
+    /**
+     * Get all warehouses with optional filtering
+     *
+     * @param building   filter by building name
+     * @param zone       filter by zone
+     * @param spaceId    filter by space ID
+     * @return List of WarehouseResponseDTO
+     */
+    public List<WarehouseResponseDTO> getFilteredWarehouses(String building, String zone, Long spaceId) {
+        List<Warehouse> warehouses = warehouseRepository.findAllByIsActiveTrue();
+
+        if (building != null && !building.isEmpty()) {
+            warehouses = warehouses.stream()
+                    .filter(warehouse -> warehouse.getBuilding().equalsIgnoreCase(building))
+                    .collect(Collectors.toList());
+        }
+        if (zone != null && !zone.isEmpty()) {
+            warehouses = warehouses.stream()
+                    .filter(warehouse -> warehouse.getZone().equalsIgnoreCase(zone))
+                    .collect(Collectors.toList());
+        }
+        if (spaceId != null) {
+            warehouses = warehouses.stream()
+                    .filter(warehouse -> warehouse.getSpaceId().equals(spaceId))
+                    .collect(Collectors.toList());
+        }
+
+        return warehouses.stream()
+                .map(warehouseMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
 
 }
