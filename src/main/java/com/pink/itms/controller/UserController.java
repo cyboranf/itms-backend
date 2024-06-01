@@ -5,6 +5,7 @@ import com.pink.itms.dto.user.UserResponseDTO;
 import com.pink.itms.dto.user.UserResponseWithoutTasksDTO;
 import com.pink.itms.dto.warehouse.WarehouseResponseDTO;
 import com.pink.itms.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,5 +48,24 @@ public class UserController {
     public ResponseEntity<List<UserResponseWithoutTasksDTO>> getAll() {
         List<UserResponseWithoutTasksDTO> responseDTOList = userService.getAll();
         return ResponseEntity.ok(responseDTOList);
+    }
+
+    /**
+     * attaches user given by userId with task given by tasksId, if said connection already existed, does nothing.
+     *
+     * @param userId id of user to be attached
+     * @param taskId id of task to be attached
+     * @return either returns status 200 if connection has been created or been created already, or 404 if either user
+     * or task does not exist
+     */
+    @PostMapping("{userId}/join/tasks/{taskId}")
+    public ResponseEntity<?> joinTaskToUser(@PathVariable Long userId, @PathVariable Long taskId) {
+        try {
+            userService.attachTask(userId, taskId);
+        } catch(RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+
+        return ResponseEntity.ok("attached");
     }
 }
