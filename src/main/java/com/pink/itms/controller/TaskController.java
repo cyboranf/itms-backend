@@ -5,6 +5,7 @@ import com.pink.itms.dto.task.TaskResponseDTO;
 import com.pink.itms.service.TaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -54,6 +55,7 @@ public class TaskController {
 
     /**
      * Get all tasks
+     *
      * @return list of all tasks
      */
     @GetMapping("")
@@ -70,5 +72,24 @@ public class TaskController {
     public ResponseEntity<TaskResponseDTO> editTask(@PathVariable Long id, @RequestBody TaskRequestDTO taskRequestDTO) {
         TaskResponseDTO responseDTO = taskService.editTask(id, taskRequestDTO);
         return ResponseEntity.ok(responseDTO);
+    }
+
+    /**
+     * attaches product by given id to task of given id if said connection already exists do nothing.
+     *
+     * @param taskId id of task to be attached
+     * @param productId id of product to be attached
+     * @return returns response with status 200 if said connection was created or been created before and 404 if either
+     * task or product couldn't be found by given id.
+     */
+    @PostMapping("/{taskId}/join/products/{productId}")
+    public ResponseEntity<?> attachProduct(@PathVariable Long taskId, @PathVariable Long productId) {
+        try {
+            taskService.attachProduct(taskId, productId);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+
+        return ResponseEntity.ok().build();
     }
 }
