@@ -47,28 +47,48 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/login").permitAll()
                 .antMatchers("/api/register").permitAll()
 
-                .antMatchers("/api/users").hasAnyAuthority("ADMIN", "USER")
-                .antMatchers("/api/user/all").hasAnyAuthority("ADMIN", "USER")
-                .antMatchers("/api/users/edit/{userId}").hasAnyAuthority("ADMIN", "USER")
-                .antMatchers("/api/users/{id}").hasAnyAuthority("ADMIN", "USER")
 
-                .antMatchers("/api/tasks/**").hasAnyAuthority("ADMIN", "USER")
-                .antMatchers("/api/tasks/").hasAnyAuthority("ADMIN", "USER")
+                // User Controller
+                .antMatchers(HttpMethod.PUT,"/api/users/edit/{userId}").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers(HttpMethod.DELETE,"/api/user/{id}").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers(HttpMethod.POST,"/api/users/{userId}/join/tasks/{taskId}").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers(HttpMethod.GET,"/api/users").hasAnyAuthority("ADMIN", "USER")
 
-                .antMatchers("/api/tasks/types").hasAnyAuthority("ADMIN", "USER")
-                .antMatchers("/api/tasks/types/{id}").hasAnyAuthority("ADMIN", "USER")
 
-                .antMatchers("/api/products").hasAnyAuthority("ADMIN", "USER")
-                .antMatchers("/api/products/{id}").hasAnyAuthority("ADMIN", "USER")
+                // TaskType Controller
+                .antMatchers(HttpMethod.POST,"/api/tasks/types").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers(HttpMethod.GET,"/api/tasks/types").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers(HttpMethod.PUT,"/api/tasks/types/{id}").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers(HttpMethod.GET,"/api/tasks/types/{id}").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers(HttpMethod.DELETE,"/api/tasks/types/{id}").hasAnyAuthority("ADMIN", "USER")
 
-                .antMatchers("/api/warehouse").hasAnyAuthority("ADMIN", "USER")
-                .antMatchers("/api/warehouse/{id}").hasAnyAuthority("ADMIN", "USER")
+                // Task Controller
+                .antMatchers(HttpMethod.POST,"/api/tasks").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers(HttpMethod.GET,"/api/tasks/{id}").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers(HttpMethod.GET,"/api/tasks").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers(HttpMethod.DELETE,"/api/tasks/{id}").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers(HttpMethod.PUT,"/api/tasks/{id}").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers(HttpMethod.POST,"/api/tasks/{taskId}/join/products/{productId}").hasAnyAuthority("ADMIN", "USER")
 
-                .antMatchers("/api//generate-user-report").hasAnyAuthority("ADMIN", "USER")
-                .antMatchers("/api/generate-warehouse-report").hasAnyAuthority("ADMIN", "USER")
-                .antMatchers("/api/generate-items-report").hasAnyAuthority("ADMIN", "USER")
-                .antMatchers("/api/generate-task-report").hasAnyAuthority("ADMIN", "USER")
-                .antMatchers("/api/generate-task-report/{id}").hasAnyAuthority("ADMIN", "USER")
+                // Product Controller
+                .antMatchers(HttpMethod.POST,"/api/products").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers(HttpMethod.GET,"/api/products").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers(HttpMethod.DELETE,"/api/products/{id}").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers(HttpMethod.PUT,"/api/products/{id}").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers(HttpMethod.GET,"/api/products/{id}").hasAnyAuthority("ADMIN", "USER")
+
+                // Warehouse Controller
+                .antMatchers(HttpMethod.POST,"/api/warehouse").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers(HttpMethod.GET,"/api/warehouse").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers(HttpMethod.PUT,"/api/warehouse/{id}").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers(HttpMethod.DELETE,"/api/warehouse/{id}").hasAnyAuthority("ADMIN", "USER")
+
+                // PDF-Report Controller
+                .antMatchers(HttpMethod.GET,"/api/generate-user-report").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers(HttpMethod.GET,"/api/generate-warehouse-report").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers(HttpMethod.GET,"/api/generate-items-report").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers(HttpMethod.GET,"/api/generate-task-report").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers(HttpMethod.GET,"/api/generate-task-report/{id}").hasAnyAuthority("ADMIN", "USER")
 
                 .anyRequest().authenticated()
                 .and()
