@@ -12,6 +12,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.Cookie;
@@ -26,6 +27,9 @@ public class LoginControllerTest {
 
     @Mock
     private JwtTokenProvider jwtTokenProvider;
+
+    @Mock
+    private UserDetails userDetails;
 
     @InjectMocks
     private LoginController loginController;
@@ -46,6 +50,9 @@ public class LoginControllerTest {
         Authentication authentication = org.mockito.Mockito.mock(Authentication.class);
         when(authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())))
                 .thenReturn(authentication);
+
+        when(authentication.getPrincipal()).thenReturn(userDetails);
+        when(userDetails.getUsername()).thenReturn("user");
 
         when(jwtTokenProvider.generateToken(authentication)).thenReturn(jwt);
 
