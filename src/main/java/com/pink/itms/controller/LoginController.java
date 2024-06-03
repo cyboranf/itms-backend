@@ -3,11 +3,13 @@ package com.pink.itms.controller;
 import com.pink.itms.dto.login.LoginRequestDTO;
 import com.pink.itms.dto.login.LoginResponseDTO;
 import com.pink.itms.jwt.JwtTokenProvider;
+import com.pink.itms.model.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,6 +51,9 @@ public class LoginController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        System.out.println(authentication.getName());
+        UserDetails user = (UserDetails)authentication.getPrincipal();
+
         String jwt = jwtTokenProvider.generateToken(authentication);
 
         Cookie jwtCookie = new Cookie("cookieJwt", jwt);
@@ -60,6 +65,6 @@ public class LoginController {
         response.addCookie(jwtCookie);
 
 
-        return ResponseEntity.ok(new LoginResponseDTO(jwt));
+        return ResponseEntity.ok(new LoginResponseDTO(jwt, user.getUsername(), user.getAuthorities()));
     }
 }
