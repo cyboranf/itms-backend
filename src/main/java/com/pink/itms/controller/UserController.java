@@ -3,69 +3,89 @@ package com.pink.itms.controller;
 import com.pink.itms.dto.user.UserRequestDTO;
 import com.pink.itms.dto.user.UserResponseDTO;
 import com.pink.itms.dto.user.UserResponseWithoutTasksDTO;
-import com.pink.itms.dto.warehouse.WarehouseResponseDTO;
+import com.pink.itms.jwt.JwtTokenProvider;
 import com.pink.itms.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, JwtTokenProvider jwtTokenProvider) {
         this.userService = userService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @PutMapping("/edit/{userId}")
-    public ResponseEntity<UserResponseDTO> editUser(@PathVariable Long userId, @RequestBody UserRequestDTO userRequestDTO) {
-        UserResponseDTO responseDTO = userService.editUser(userId, userRequestDTO);
-        return ResponseEntity.ok(responseDTO);
+    public ResponseEntity<UserResponseDTO> editUser(@PathVariable Long userId, @RequestBody UserRequestDTO userRequestDTO, HttpServletRequest request) {
+        String token = jwtTokenProvider.resolveToken(request);
+
+        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+            UserResponseDTO responseDTO = userService.editUser(userId, userRequestDTO);
+            return ResponseEntity.ok(responseDTO);
+        } else if (token == null || !jwtTokenProvider.validateToken(token)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
     }
 
-    /**
-     * @param id
-     * @return {@link UserResponseDTO} - response from deleted user
-     */
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable long id) {
-        try {
-            userService.deleteUser(id);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> deleteUser(@PathVariable long id, HttpServletRequest request) {
+        String token = jwtTokenProvider.resolveToken(request);
+
+        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+            try {
+                userService.deleteUser(id);
+                return ResponseEntity.ok().build();
+            } catch (Exception e) {
+                return ResponseEntity.notFound().build();
+            }
+        } else if (token == null || !jwtTokenProvider.validateToken(token)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
     }
 
-    /**
-     * Get all users
-     * @return List of UserResponseDTO
-     */
     @GetMapping("")
-    public ResponseEntity<List<UserResponseWithoutTasksDTO>> getAll() {
-        List<UserResponseWithoutTasksDTO> responseDTOList = userService.getAll();
-        return ResponseEntity.ok(responseDTOList);
+    public ResponseEntity<List<UserResponseWithoutTasksDTO>> getAll(HttpServletRequest request) {
+        String token = jwtTokenProvider.resolveToken(request);
+
+        if (token != null && jwtTokenProvider.validateToken(token)) {
+            List<UserResponseWithoutTasksDTO> responseDTOList = userService.getAll();
+            return ResponseEntity.ok(responseDTOList);
+        } else if (token == null || !jwtTokenProvider.validateToken(token)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
     }
 
-    /**
-     * attaches user given by userId with task given by tasksId, if said connection already existed, does nothing.
-     *
-     * @param userId id of user to be attached
-     * @param taskId id of task to be attached
-     * @return either returns status 200 if connection has been created or been created already, or 404 if either user
-     * or task does not exist
-     */
     @PostMapping("{userId}/join/tasks/{taskId}")
-    public ResponseEntity<?> joinTaskToUser(@PathVariable Long userId, @PathVariable Long taskId) {
-        try {
-            userService.attachTask(userId, taskId);
-        } catch(RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+    public ResponseEntity<?> joinTaskToUser(@PathVariable Long userId, @PathVariable Long taskId, HttpServletRequest request) {
+        String token = jwtTokenProvider.resolveToken(request);
 
-        return ResponseEntity.ok("attached");
+        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+            try {
+                userService.attachTask(userId, taskId);
+            } catch(RuntimeException e) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            }
+
+            return ResponseEntity.ok("attached");
+        } else if (token == null || !jwtTokenProvider.validateToken(token)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
     }
 }
