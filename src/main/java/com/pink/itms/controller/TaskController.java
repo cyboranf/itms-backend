@@ -27,7 +27,7 @@ public class TaskController {
     public ResponseEntity<?> createTask(@RequestBody TaskRequestDTO taskRequestDTO, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
             try {
                 TaskResponseDTO taskResponseDTO = taskService.createTask(taskRequestDTO);
                 return new ResponseEntity<>(taskResponseDTO, HttpStatus.CREATED);
@@ -65,7 +65,7 @@ public class TaskController {
     public ResponseEntity<?> deleteTask(@PathVariable long id, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
             try {
                 taskService.deleteTask(id);
                 return ResponseEntity.ok().build();
@@ -112,7 +112,7 @@ public class TaskController {
     public ResponseEntity<?> attachProduct(@PathVariable Long taskId, @PathVariable Long productId, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
             try {
                 taskService.attachProduct(taskId, productId);
             } catch (RuntimeException e) {
