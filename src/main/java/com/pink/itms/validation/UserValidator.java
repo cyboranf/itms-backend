@@ -39,10 +39,6 @@ public class UserValidator {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Can not found User with id = " + id));
 
-        // Check if the username already exists
-        if (userRepository.findByUsername(userRequestDTO.getUsername()).isPresent()) {
-            throw new ExistingUsernameException("Account with username: " + userRequestDTO.getUsername() + " already exists.");
-        }
         // Check if the username meets length requirements
         if (userRequestDTO.getUsername().length() < 6 || userRequestDTO.getUsername().length() > 12) {
             throw new InvalidUsernameException("Username must have between 6 and 12 characters in length.");
