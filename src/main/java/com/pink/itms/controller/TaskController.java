@@ -98,7 +98,7 @@ public class TaskController {
     public ResponseEntity<TaskResponseDTO> editTask(@PathVariable Long id, @RequestBody TaskRequestDTO taskRequestDTO, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
             TaskResponseDTO responseDTO = taskService.editTask(id, taskRequestDTO);
             return ResponseEntity.ok(responseDTO);
         } else if (token == null || !jwtTokenProvider.validateToken(token)) {

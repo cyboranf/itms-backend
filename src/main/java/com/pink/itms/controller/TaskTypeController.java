@@ -26,7 +26,7 @@ public class TaskTypeController {
     public ResponseEntity<?> createTaskType(@RequestBody TaskTypeRequestDTO taskTypeRequestDTO, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
             try {
                 TaskTypeResponseDTO taskTypeResponseDTO = taskTypeService.createTaskType(taskTypeRequestDTO);
                 return new ResponseEntity<>(taskTypeResponseDTO, HttpStatus.CREATED);
@@ -44,7 +44,7 @@ public class TaskTypeController {
     public ResponseEntity<?> editTaskType(@PathVariable long id, @RequestBody TaskTypeRequestDTO taskTypeRequestDTO, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
             try {
                 TaskTypeResponseDTO taskTypeResponseDTO = taskTypeService.editTaskType(id, taskTypeRequestDTO);
                 return new ResponseEntity<>(taskTypeResponseDTO, HttpStatus.OK);
@@ -62,7 +62,7 @@ public class TaskTypeController {
     public ResponseEntity<?> deleteTaskType(@PathVariable long id, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
             try {
                 taskTypeService.deleteTaskType(id);
                 return ResponseEntity.ok().build();

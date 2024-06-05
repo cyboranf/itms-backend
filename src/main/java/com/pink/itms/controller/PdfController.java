@@ -60,7 +60,7 @@ public class PdfController {
             HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
             List<UserResponseWithoutTasksDTO> users = userService.getAll();
 
             // Filtering
@@ -103,7 +103,7 @@ public class PdfController {
     public ResponseEntity<InputStreamResource> generateWarehouseReport(HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
             List<WarehouseResponseDTO> warehouse = warehouseService.getAll();
             List<pdf.generator.model.Warehouse> pdfWarehouse = WarehouseMapper.toPdfWarehouseList(warehouse);
 
@@ -128,7 +128,7 @@ public class PdfController {
     public ResponseEntity<InputStreamResource> generateItemsReport(HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
             List<ProductResponseDTO> products = productService.getAll();
             List<pdf.generator.model.Product> pdfProducts = ProductMapper.toPdfProductList(products);
 
@@ -163,7 +163,7 @@ public class PdfController {
 
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
             List<TaskResponseDTO> tasks = taskService.getFilteredTasks(state, priority, userId, taskId);
             List<Tasks> pdfTasks = TaskMapper.toPdfTaskList(tasks);
 

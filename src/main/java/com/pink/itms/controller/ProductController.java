@@ -28,7 +28,7 @@ public class ProductController {
     public ResponseEntity<?> createProduct(@RequestBody ProductRequestDTO productRequestDTO, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
             ProductResponseDTO productResponseDTO = productService.createProduct(productRequestDTO);
             return new ResponseEntity<>(productResponseDTO, HttpStatus.CREATED);
         } else if (token == null || !jwtTokenProvider.validateToken(token)) {
@@ -42,7 +42,7 @@ public class ProductController {
     public ResponseEntity<?> deleteProduct(@PathVariable long id, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
             try {
                 productService.deleteProduct(id);
                 return ResponseEntity.ok().build();
@@ -60,7 +60,7 @@ public class ProductController {
     public ResponseEntity<?> editProduct(@PathVariable long id, @RequestBody ProductRequestDTO requestDTO, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
             try {
                 ProductResponseDTO responseDTO = productService.editProduct(id, requestDTO);
                 return new ResponseEntity<>(responseDTO, HttpStatus.OK);

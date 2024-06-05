@@ -28,7 +28,7 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> editUser(@PathVariable Long userId, @RequestBody UserRequestDTO userRequestDTO, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
             UserResponseDTO responseDTO = userService.editUser(userId, userRequestDTO);
             return ResponseEntity.ok(responseDTO);
         } else if (token == null || !jwtTokenProvider.validateToken(token)) {
@@ -42,7 +42,7 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@PathVariable long id, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
             try {
                 userService.deleteUser(id);
                 return ResponseEntity.ok().build();
@@ -74,7 +74,7 @@ public class UserController {
     public ResponseEntity<?> joinTaskToUser(@PathVariable Long userId, @PathVariable Long taskId, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
             try {
                 userService.attachTask(userId, taskId);
             } catch(RuntimeException e) {
