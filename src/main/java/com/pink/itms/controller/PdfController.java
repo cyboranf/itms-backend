@@ -100,53 +100,48 @@ public class PdfController {
     }
 
     @GetMapping("/generate-warehouse-report")
-    public ResponseEntity<InputStreamResource> generateWarehouseReport(HttpServletRequest request) {
-        String token = jwtTokenProvider.resolveToken(request);
+    public ResponseEntity<InputStreamResource> generateWarehouseReport(
+            @RequestParam(value = "building", required = false) String building,
+            @RequestParam(value = "zone", required = false) String zone,
+            @RequestParam(value = "spaceId", required = false) Long spaceId
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
-            List<WarehouseResponseDTO> warehouse = warehouseService.getAll();
-            List<pdf.generator.model.Warehouse> pdfWarehouse = WarehouseMapper.toPdfWarehouseList(warehouse);
+            ) {
 
-            ByteArrayInputStream bis = pdfReportGenerator.generateWarehouseReport(pdfWarehouse);
+        List<WarehouseResponseDTO> warehouses = warehouseService.getFilteredWarehouses(building, zone, spaceId);
+        List<pdf.generator.model.Warehouse> pdfWarehouses = WarehouseMapper.toPdfWarehouseList(warehouses);
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-Disposition", "inline; filename=user-report.pdf");
+        ByteArrayInputStream bis = pdfReportGenerator.generateWarehouseReport(pdfWarehouses);
 
-            return ResponseEntity
-                    .ok()
-                    .headers(headers)
-                    .contentType(MediaType.APPLICATION_PDF)
-                    .body(new InputStreamResource(bis));
-        } else if (token == null || !jwtTokenProvider.validateToken(token)) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        } else {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "inline; filename=warehouse-report.pdf");
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(new InputStreamResource(bis));
     }
 
     @GetMapping("/generate-items-report")
-    public ResponseEntity<InputStreamResource> generateItemsReport(HttpServletRequest request) {
-        String token = jwtTokenProvider.resolveToken(request);
+    public ResponseEntity<InputStreamResource> generateItemsReport(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "code", required = false) String code) {
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
-            List<ProductResponseDTO> products = productService.getAll();
-            List<pdf.generator.model.Product> pdfProducts = ProductMapper.toPdfProductList(products);
+        List<ProductResponseDTO> products = productService.getFilteredProduct(name, code);
+        List<pdf.generator.model.Product> pdfProducts = ProductMapper.toPdfProductList(products);
 
-            ByteArrayInputStream bis = pdfReportGenerator.generateProductReport(pdfProducts);
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-Disposition", "inline; filename=user-report.pdf");
+        ByteArrayInputStream bis = pdfReportGenerator.generateProductReport(pdfProducts);
 
-            return ResponseEntity
-                    .ok()
-                    .headers(headers)
-                    .contentType(MediaType.APPLICATION_PDF)
-                    .body(new InputStreamResource(bis));
-        } else if (token == null || !jwtTokenProvider.validateToken(token)) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        } else {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "inline; filename=user-report.pdf");
+
+        // Zwrócenie odpowiedzi zawierającej raport PDF
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(new InputStreamResource(bis));
     }
 
     @GetMapping("/generate-task-report")
