@@ -69,6 +69,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.DELETE,"/api/tasks/{id}").hasAnyAuthority("Admin", "USER")
                 .antMatchers(HttpMethod.PUT,"/api/tasks/{id}").hasAnyAuthority("Admin", "USER")
                 .antMatchers(HttpMethod.POST,"/api/tasks/{taskId}/join/products/{productId}").hasAnyAuthority("Admin", "USER")
+                .antMatchers(HttpMethod.POST, "/api/tasks/{taskId}/join/warehouse/{warehouseId}").hasAnyAuthority("Admin", "User")
 
                 // Product Controller
                 .antMatchers(HttpMethod.POST,"/api/products").hasAnyAuthority("Admin", "USER")
