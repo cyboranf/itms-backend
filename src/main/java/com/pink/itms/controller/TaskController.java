@@ -126,4 +126,23 @@ public class TaskController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
     }
+
+    @PostMapping("/{taskId}/join/warehouse/{warehouseId}")
+    public ResponseEntity<?> attachWarehouse(@PathVariable Long taskId, @PathVariable Long warehouseId, HttpServletRequest request) {
+        String token = jwtTokenProvider.resolveToken(request);
+
+        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
+            try {
+                taskService.attachWarehouse(taskId, warehouseId);
+            } catch (RuntimeException e) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            }
+
+            return ResponseEntity.ok().build();
+        } else if (token == null || !jwtTokenProvider.validateToken(token)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
 }

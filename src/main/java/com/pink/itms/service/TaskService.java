@@ -11,6 +11,7 @@ import com.pink.itms.model.Task;
 import com.pink.itms.model.Warehouse;
 import com.pink.itms.repository.ProductRepository;
 import com.pink.itms.repository.TaskRepository;
+import com.pink.itms.repository.WarehouseRepository;
 import com.pink.itms.validation.TaskValidator;
 import org.springframework.stereotype.Service;
 
@@ -28,12 +29,14 @@ public class TaskService {
     private final TaskValidator taskValidator;
     private final TaskMapper taskMapper;
     private final ProductRepository productRepository;
+    private final WarehouseRepository warehouseRepository;
 
-    public TaskService(TaskRepository taskRepository, TaskValidator taskValidator, TaskMapper taskMapper, ProductRepository productRepository) {
+    public TaskService(TaskRepository taskRepository, TaskValidator taskValidator, TaskMapper taskMapper, ProductRepository productRepository, WarehouseRepository warehouseRepository) {
         this.taskRepository = taskRepository;
         this.taskValidator = taskValidator;
         this.taskMapper = taskMapper;
         this.productRepository = productRepository;
+        this.warehouseRepository = warehouseRepository;
     }
 
     public TaskResponseDTO createTask(TaskRequestDTO taskRequestDTO) {
@@ -124,6 +127,24 @@ public class TaskService {
         Set<Product> productSet = task.getProducts();
         productSet.add(product);
         task.setProducts(productSet);
+
+        taskRepository.save(task);
+
+    }
+
+    /**
+     * attaches warehouse by given id to task of given id if said connection already exists do nothing
+     *
+     * @param taskId id of task to be attached
+     * @param warehouseId id of warehouse to be attached
+     */
+    public void attachWarehouse(Long taskId, Long warehouseId) {
+        Task task = taskRepository.findById(taskId).orElseThrow(() -> new TaskNotFoundException("Task Not Found"));
+        Warehouse warehouse = warehouseRepository.findById(warehouseId).orElseThrow(() -> new WarehouseNotFoundException("Warehouse Not Found"));
+
+        Set<Warehouse> warehouseSet = task.getWarehouses();
+        warehouseSet.add(warehouse);
+        task.setWarehouses(warehouseSet);
 
         taskRepository.save(task);
 
