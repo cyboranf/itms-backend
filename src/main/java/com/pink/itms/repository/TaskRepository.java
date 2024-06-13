@@ -11,5 +11,5 @@ import java.util.Optional;
 public interface TaskRepository extends JpaRepository<Task, Long> {
     Optional<Task> findByIdAndIsActiveTrue(Long id);
     List<Task> findAllByIsActiveTrue();
-}
+    List<Task> findAllByUsers_IdAndIsActiveTrue(Long userId);}
 
