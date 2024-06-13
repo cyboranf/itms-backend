@@ -149,4 +149,16 @@ public class TaskService {
         taskRepository.save(task);
 
     }
+
+    /**
+     * Get all tasks by user id
+     * @param userId
+     * @return
+     */
+    public List<TaskResponseDTO> getAllTasksByUserId(Long userId) {
+        List<Task> tasks = taskRepository.findAllByUsers_IdAndIsActiveTrue(userId);
+        return tasks.stream()
+                .map(taskMapper::toDto)
+                .collect(Collectors.toList());
+    }
 }
