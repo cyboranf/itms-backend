@@ -1,6 +1,9 @@
 package com.pink.itms.dto.register;
 
+import com.pink.itms.model.Role;
 import lombok.Data;
+
+import java.util.Set;
 
 @Data
 public class RegisterResponseDTO {
@@ -11,4 +14,5 @@ public class RegisterResponseDTO {
     private String pesel;
     private String email;
     private String phoneNumber;
+
 }

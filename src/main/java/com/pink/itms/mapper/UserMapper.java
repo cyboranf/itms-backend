@@ -4,6 +4,7 @@ import com.pink.itms.dto.user.UserRequestDTO;
 import com.pink.itms.dto.user.UserResponseDTO;
 import com.pink.itms.dto.user.UserResponseWithoutTasksDTO;
 import com.pink.itms.exception.user.UserNotFoundException;
+import com.pink.itms.model.Role;
 import com.pink.itms.model.User;
 import com.pink.itms.repository.UserRepository;
 import com.pink.itms.service.UserService;
@@ -40,6 +41,7 @@ public class UserMapper {
         BeanUtils.copyProperties(user, userResponseDTO);
         userResponseDTO.setTasks(userRepository.findById(user.getId()).orElseThrow(() -> new UserNotFoundException("User not found")).getTasks());
         userResponseDTO.setIsActive(user.getIsActive());
+        userResponseDTO.setRoles(user.getRoles().stream().map(Role::getName).collect(Collectors.joining(", ")));
 
         return userResponseDTO;
     }
@@ -54,6 +56,7 @@ public class UserMapper {
         userResponseWithoutTasksDTO.setEmail(user.getEmail());
         userResponseWithoutTasksDTO.setPhoneNumber(user.getPhoneNumber());
         userResponseWithoutTasksDTO.setIsActive(user.getIsActive());
+        userResponseWithoutTasksDTO.setRoles(user.getRoles().stream().map(Role::getName).collect(Collectors.joining(", ")));
 
         return userResponseWithoutTasksDTO;
     }

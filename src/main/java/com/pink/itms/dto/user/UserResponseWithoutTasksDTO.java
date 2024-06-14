@@ -12,4 +12,6 @@ public class UserResponseWithoutTasksDTO {
     private String email;
     private String phoneNumber;
     private Boolean isActive;
+    private String roles;
+
 }

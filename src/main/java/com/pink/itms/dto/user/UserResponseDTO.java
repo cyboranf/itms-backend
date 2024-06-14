@@ -16,4 +16,5 @@ public class UserResponseDTO {
     private String phoneNumber;
     private Set<Task> tasks;
     private Boolean isActive;
+    private String roles;
 }

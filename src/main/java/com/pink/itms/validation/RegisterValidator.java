@@ -53,5 +53,8 @@ public class RegisterValidator {
         if (!EMAIL_PATTERN.matcher(registerRequestDTO.getEmail()).matches()) {
             throw new InvalidEmailException("Email does not follow a valid format.");
         }
+        if (userRepository.findByEmail(registerRequestDTO.getEmail()).isPresent()) {
+            throw new ExistingEmailException("Account with email: " + registerRequestDTO.getEmail() + " already exists.");
+        }
     }
 }
