@@ -43,7 +43,7 @@ public class RegisterMapper {
         user.setPassword(passwordEncoder.encode(registerRequestDTO.getPassword()));
         user.setName(registerRequestDTO.getName());
         user.setLastname(registerRequestDTO.getLastname());
-        user.setPhoneNumber(registerRequestDTO.getPhone_number());
+        user.setPhoneNumber(registerRequestDTO.getPhoneNumber());
         user.setEmail(registerRequestDTO.getEmail());
 
 
