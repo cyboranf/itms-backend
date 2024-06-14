@@ -81,4 +81,9 @@ public class UserService {
 
         userRepository.save(user);
     }
+
+    public UserResponseWithoutTasksDTO getSelf(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
+        return userMapper.entityToDtoWithoutTasks(user);
+    }
 }
