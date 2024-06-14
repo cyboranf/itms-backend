@@ -11,6 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -27,8 +28,9 @@ public class ProductController {
     @PostMapping("")
     public ResponseEntity<?> createProduct(@RequestBody ProductRequestDTO productRequestDTO, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
+        Collection<?> auth = jwtTokenProvider.getAuthentication(token).getAuthorities();
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
+        if (token != null && jwtTokenProvider.validateToken(token)) {
             ProductResponseDTO productResponseDTO = productService.createProduct(productRequestDTO);
             return new ResponseEntity<>(productResponseDTO, HttpStatus.CREATED);
         } else if (token == null || !jwtTokenProvider.validateToken(token)) {
@@ -42,7 +44,7 @@ public class ProductController {
     public ResponseEntity<?> deleteProduct(@PathVariable long id, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
+        if (token != null && jwtTokenProvider.validateToken(token)) {
             try {
                 productService.deleteProduct(id);
                 return ResponseEntity.ok().build();
@@ -60,7 +62,7 @@ public class ProductController {
     public ResponseEntity<?> editProduct(@PathVariable long id, @RequestBody ProductRequestDTO requestDTO, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
+        if (token != null && jwtTokenProvider.validateToken(token)) {
             try {
                 ProductResponseDTO responseDTO = productService.editProduct(id, requestDTO);
                 return new ResponseEntity<>(responseDTO, HttpStatus.OK);

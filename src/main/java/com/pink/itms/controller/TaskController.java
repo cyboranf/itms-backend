@@ -27,7 +27,7 @@ public class TaskController {
     public ResponseEntity<?> createTask(@RequestBody TaskRequestDTO taskRequestDTO, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
+        if (token != null && jwtTokenProvider.validateToken(token)) {
             try {
                 TaskResponseDTO taskResponseDTO = taskService.createTask(taskRequestDTO);
                 return new ResponseEntity<>(taskResponseDTO, HttpStatus.CREATED);
@@ -65,7 +65,7 @@ public class TaskController {
     public ResponseEntity<?> deleteTask(@PathVariable long id, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
+        if (token != null && jwtTokenProvider.validateToken(token)) {
             try {
                 taskService.deleteTask(id);
                 return ResponseEntity.ok().build();
@@ -98,7 +98,7 @@ public class TaskController {
     public ResponseEntity<TaskResponseDTO> editTask(@PathVariable Long id, @RequestBody TaskRequestDTO taskRequestDTO, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
+        if (token != null && jwtTokenProvider.validateToken(token)) {
             TaskResponseDTO responseDTO = taskService.editTask(id, taskRequestDTO);
             return ResponseEntity.ok(responseDTO);
         } else if (token == null || !jwtTokenProvider.validateToken(token)) {
@@ -112,7 +112,7 @@ public class TaskController {
     public ResponseEntity<?> attachProduct(@PathVariable Long taskId, @PathVariable Long productId, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
+        if (token != null && jwtTokenProvider.validateToken(token)) {
             try {
                 taskService.attachProduct(taskId, productId);
             } catch (RuntimeException e) {
@@ -131,7 +131,7 @@ public class TaskController {
     public ResponseEntity<?> attachWarehouse(@PathVariable Long taskId, @PathVariable Long warehouseId, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
+        if (token != null && jwtTokenProvider.validateToken(token)) {
             try {
                 taskService.attachWarehouse(taskId, warehouseId);
             } catch (RuntimeException e) {

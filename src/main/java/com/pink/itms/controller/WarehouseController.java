@@ -27,7 +27,7 @@ public class WarehouseController {
     public ResponseEntity<?> createWarehouse(@RequestBody WarehouseRequestDTO warehouseRequestDTO, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
+        if (token != null && jwtTokenProvider.validateToken(token)) {
             WarehouseResponseDTO warehouseResponseDTO = warehouseService.createWarehouse(warehouseRequestDTO);
             return new ResponseEntity<>(warehouseResponseDTO, HttpStatus.CREATED);
         } else if (token == null || !jwtTokenProvider.validateToken(token)) {
@@ -41,7 +41,7 @@ public class WarehouseController {
     public ResponseEntity<?> editWarehouse(@PathVariable long id, @RequestBody WarehouseRequestDTO warehouseRequestDTO, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
+        if (token != null && jwtTokenProvider.validateToken(token)) {
             try {
                 WarehouseResponseDTO warehouseResponseDTO = warehouseService.editWarehouse(id, warehouseRequestDTO);
                 return new ResponseEntity<>(warehouseResponseDTO, HttpStatus.OK);
@@ -59,7 +59,7 @@ public class WarehouseController {
     public ResponseEntity<?> deleteWarehouse(@PathVariable long id, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
+        if (token != null && jwtTokenProvider.validateToken(token)) {
             try {
                 warehouseService.deleteWarehouse(id);
                 return ResponseEntity.ok().build();
