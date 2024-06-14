@@ -54,6 +54,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.DELETE, "/api/user/{id}").hasAnyAuthority("Admin", "User")
                 .antMatchers(HttpMethod.POST, "/api/users/{userId}/join/tasks/{taskId}").hasAnyAuthority("Admin", "User")
                 .antMatchers(HttpMethod.GET, "/api/users").hasAnyAuthority("Admin", "User")
+                .antMatchers(HttpMethod.GET, "/api/users/self").permitAll()
 
 
                 // TaskType Controller
