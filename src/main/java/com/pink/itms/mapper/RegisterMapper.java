@@ -55,8 +55,7 @@ public class RegisterMapper {
             throw new InvalidKeyLengthException("Error: AES encryption key length is invalid. Expected 16-byte key");        }
 
 
-        Role userRole = roleRepository.findById(registerRequestDTO.getRoleId())
-                .orElseThrow(() -> new RoleNotFoundException("Error: Role is not found."));
+        Role userRole = roleRepository.findByName("User");
         if (userRole != null) {
             Set<Role> roles = new HashSet<>();
             roles.add(userRole);

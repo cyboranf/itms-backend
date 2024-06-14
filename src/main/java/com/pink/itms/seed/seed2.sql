@@ -28,7 +28,8 @@ INSERT INTO role (id, name) VALUES
 (1, 'Admin'),
 (2, 'Manager'),
 (3, 'Warehouseman'),
-(4, 'Printer');
+(4, 'Printer'),
+(5, 'User');
 
 INSERT INTO users (id, user_name, password, name, last_name, pesel, email, phone_number, is_active) VALUES
 (1, 'JKowalski', '$2b$12$vDdaQqZUOgs//0WnON2lPuHsnDqpqRZBOHW1rCyjlexzZZPA3k10i', 'Jan', 'Kowalski', 'bByC+fkZin098Wtl41vOxT7DKoy8k1HJ8khJ7+Xp6Xk=', 'jKowalski@gmail.com', '123123123', TRUE),
