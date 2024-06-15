@@ -184,10 +184,21 @@ public class TaskController {
     public ResponseEntity<?> getAssignedForSelf(HttpServletRequest request){
         String token = jwtTokenProvider.resolveToken(request);
 
-        System.out.println(jwtTokenProvider.getAuthentication(token).getAuthorities().toArray()[0]);
-
         if (token != null && jwtTokenProvider.validateToken(token)) {
            return  ResponseEntity.ok(taskService.getAssignedForSelf(jwtTokenProvider.getAuthentication(token).getName()));
+        } else if (token == null || !jwtTokenProvider.validateToken(token)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @GetMapping("/user/{userName}/assigned")
+    public ResponseEntity<?> getAssignedForUser(@PathVariable String userName, HttpServletRequest request){
+        String token = jwtTokenProvider.resolveToken(request);
+
+        if (token != null && jwtTokenProvider.validateToken(token)) {
+            return  ResponseEntity.ok(taskService.getAssignedForSelf(userName));
         } else if (token == null || !jwtTokenProvider.validateToken(token)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
