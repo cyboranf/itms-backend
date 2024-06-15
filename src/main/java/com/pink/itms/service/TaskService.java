@@ -4,17 +4,20 @@ import com.pink.itms.dto.task.TaskRequestDTO;
 import com.pink.itms.dto.task.TaskResponseDTO;
 import com.pink.itms.exception.product.ProductNotFoundException;
 import com.pink.itms.exception.task.TaskNotFoundException;
+import com.pink.itms.exception.user.UserNotFoundException;
 import com.pink.itms.exception.warehouse.WarehouseNotFoundException;
 import com.pink.itms.mapper.TaskMapper;
 import com.pink.itms.model.*;
 import com.pink.itms.repository.ProductRepository;
 import com.pink.itms.repository.TaskRepository;
+import com.pink.itms.repository.UserRepository;
 import com.pink.itms.repository.WarehouseRepository;
 import com.pink.itms.validation.TaskValidator;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -28,10 +31,21 @@ public class TaskService {
     private final TaskMapper taskMapper;
     private final ProductRepository productRepository;
     private final WarehouseRepository warehouseRepository;
+    private final UserRepository userRepository;
+
+    public TaskService(TaskRepository taskRepository, TaskValidator taskValidator, TaskMapper taskMapper, ProductRepository productRepository, WarehouseRepository warehouseRepository, UserRepository userRepository) {
+        this.taskRepository = taskRepository;
+        this.taskValidator = taskValidator;
+        this.taskMapper = taskMapper;
+        this.productRepository = productRepository;
+        this.warehouseRepository = warehouseRepository;
+        this.userRepository = userRepository;
+    }
+
     /*
-    1 - admin i manager
-    2 - warehouseman
-    3 - printer
+        1 - admin i manager
+        2 - warehouseman
+        3 - printer
      */
     private final int[][] taskState = {
             {2, 1},
@@ -42,14 +56,6 @@ public class TaskService {
             {1},
             {1}
     };
-
-    public TaskService(TaskRepository taskRepository, TaskValidator taskValidator, TaskMapper taskMapper, ProductRepository productRepository, WarehouseRepository warehouseRepository) {
-        this.taskRepository = taskRepository;
-        this.taskValidator = taskValidator;
-        this.taskMapper = taskMapper;
-        this.productRepository = productRepository;
-        this.warehouseRepository = warehouseRepository;
-    }
 
     /**
      * checks if given role is assigned in this state to advance task to next stage
@@ -216,6 +222,27 @@ public class TaskService {
 
         taskRepository.save(task);
         return taskMapper.toDto(task);
+    }
+
+    /**
+     * returns all tasks assigned to user with given username (Warehouses and Printers sees only tasks in correct state)
+     *
+     * @param username - username of user
+     * @return {@link List<TaskResponseDTO>} - list of tasks assigned to given user
+     */
+    public List<TaskResponseDTO> getAssignedForSelf(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found!!"));
+
+        Set<Task> taskSet = user.getTasks();
+        List<TaskResponseDTO> responseList = new ArrayList<>();
+        String role = user.getRoles().stream().toList().get(0).getName();
+        List<Task> taskList = taskSet.stream().toList();
+
+        for (int i = 0; i < taskSet.size(); i++) {
+            if (isAuthorised(role, taskList.get(i))) responseList.add(taskMapper.toDto(taskList.get(i)));
+        }
+
+        return responseList;
     }
 
 }

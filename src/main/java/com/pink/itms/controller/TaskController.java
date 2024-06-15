@@ -11,6 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -179,6 +180,20 @@ public class TaskController {
         }
     }
 
+    @GetMapping("/self/assigned")
+    public ResponseEntity<?> getAssignedForSelf(HttpServletRequest request){
+        String token = jwtTokenProvider.resolveToken(request);
+
+        System.out.println(jwtTokenProvider.getAuthentication(token).getAuthorities().toArray()[0]);
+
+        if (token != null && jwtTokenProvider.validateToken(token)) {
+           return  ResponseEntity.ok(taskService.getAssignedForSelf(jwtTokenProvider.getAuthentication(token).getName()));
+        } else if (token == null || !jwtTokenProvider.validateToken(token)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
 
 
 }
