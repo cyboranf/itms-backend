@@ -4,6 +4,7 @@ import com.pink.itms.dto.user.UserRequestDTO;
 import com.pink.itms.dto.user.UserResponseDTO;
 import com.pink.itms.dto.user.UserResponseWithoutTasksDTO;
 import com.pink.itms.jwt.JwtTokenProvider;
+import com.pink.itms.model.Role;
 import com.pink.itms.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -139,4 +140,17 @@ public class UserController {
         }
     }
 
+    @GetMapping("/roles")
+    public ResponseEntity<List<Role>> getAllRoles(HttpServletRequest request) {
+        String token = jwtTokenProvider.resolveToken(request);
+
+        if (token != null && jwtTokenProvider.validateToken(token)) {
+            List<Role> roles = userService.getAllRoles();
+            return ResponseEntity.ok(roles);
+        } else if (token == null || !jwtTokenProvider.validateToken(token)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
 }

@@ -106,4 +106,9 @@ public class UserService {
                 .map(userMapper::entityToDtoWithoutTasks)
                 .toList();
     }
+
+    // Get all Roles
+    public List<Role> getAllRoles() {
+        return roleRepository.findAll();
+    }
 }
