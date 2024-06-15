@@ -164,9 +164,11 @@ public class TaskController {
     public ResponseEntity<?> nextStage(@PathVariable Long taskId, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
+        System.out.println(jwtTokenProvider.getAuthentication(token).getAuthorities().toArray()[0]);
+
         if (token != null && jwtTokenProvider.validateToken(token)) {
             try {
-                return ResponseEntity.ok(taskService.nextStage(taskId));
+                return ResponseEntity.ok(taskService.nextStage(taskId, jwtTokenProvider.getAuthentication(token).getAuthorities().toArray()[0].toString()));
             } catch (TaskNotFoundException e) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
             }
@@ -176,5 +178,7 @@ public class TaskController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
     }
+
+
 
 }

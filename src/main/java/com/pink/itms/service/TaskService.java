@@ -6,10 +6,7 @@ import com.pink.itms.exception.product.ProductNotFoundException;
 import com.pink.itms.exception.task.TaskNotFoundException;
 import com.pink.itms.exception.warehouse.WarehouseNotFoundException;
 import com.pink.itms.mapper.TaskMapper;
-import com.pink.itms.model.Product;
-import com.pink.itms.model.Task;
-import com.pink.itms.model.TaskType;
-import com.pink.itms.model.Warehouse;
+import com.pink.itms.model.*;
 import com.pink.itms.repository.ProductRepository;
 import com.pink.itms.repository.TaskRepository;
 import com.pink.itms.repository.WarehouseRepository;
@@ -52,6 +49,27 @@ public class TaskService {
         this.taskMapper = taskMapper;
         this.productRepository = productRepository;
         this.warehouseRepository = warehouseRepository;
+    }
+
+    /**
+     * checks if given role is assigned in this state to advance task to next stage
+     *
+     * @param role role of user trying to advance a task
+     * @param task task to be advanced
+     * @return if user has authority to advance this task
+     */
+    private boolean isAuthorised(String role, Task task) {
+        if (role.equals("Admin") || role.equals("Manager")) return true;
+
+        switch (task.getState()) {
+            case 2:
+                if (role.equals("Warehouseman")) return true;
+                break;
+            case 3:
+                if (role.equals("Printer")) return true;
+        }
+
+        return false;
     }
 
     public TaskResponseDTO createTask(TaskRequestDTO taskRequestDTO) {
@@ -183,17 +201,21 @@ public class TaskService {
      * @param taskId id of task to be changed
      * @return {@link TaskResponseDTO} - id of task to be changed
      */
-    public TaskResponseDTO nextStage(Long taskId) {
+    public TaskResponseDTO nextStage(Long taskId, String role) {
         Task task = taskRepository.findById(taskId).orElseThrow(() -> new TaskNotFoundException("Task Not Found!"));
         TaskType type = task.getType();
+
+        if (!isAuthorised(role, task)) throw new RuntimeException("User not authorised!");
         int state = (task.getState() + 1);
 
         if (state >= taskState[type.getId().intValue()].length || state == 0) {
             task.setState(-1);
-        } else {task.setState(state);
+        } else {
+            task.setState(state);
         }
 
         taskRepository.save(task);
         return taskMapper.toDto(task);
     }
+
 }
