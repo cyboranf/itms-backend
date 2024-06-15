@@ -96,6 +96,16 @@ public class UserMapper {
     }
 
     public void updateUserFromRequestDTO(UserRequestDTO dto, User user) {
-        BeanUtils.copyProperties(dto, user, "id");
+        User tempUser = new User();
+        BeanUtils.copyProperties(dto, tempUser, "id");
+        try {
+            String encryptedPesel = crypt.encrypt(dto.getPesel());
+            tempUser.setPesel(encryptedPesel);
+        } catch (InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
+            throw new CipherDefectedException("Error: PESEL cipher has been defected.");
+        } catch (InvalidKeyException e) {
+            throw new InvalidKeyLengthException("Error: AES encryption key length is invalid. Expected 16-Byte key");
+        }
+        BeanUtils.copyProperties(tempUser, user, "id");
     }
 }
