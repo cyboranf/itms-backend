@@ -76,7 +76,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/tasks/user/{userId}").hasAnyAuthority("Admin", "Warehouseman", "Printer", "Manager")
                 .antMatchers(HttpMethod.POST, "/api/tasks/{taskId}/finished").hasAnyAuthority("Admin", "Warehouseman", "Printer", "Manager")
                 .antMatchers(HttpMethod.POST, "/api/tasks/self/assigned").hasAnyAuthority("Admin", "Warehouseman", "Printer", "Manager")
-                .antMatchers(HttpMethod.POST, "/api/tasks/user/{userName}/assigned").hasAnyAuthority("Admin", "Warehouseman", "Printer", "Manager")
+                .antMatchers(HttpMethod.POST, "/api/tasks/user/{userName}/assigned").hasAnyAuthority("Admin", "Manager")
 
                 // Product Controller
                 .antMatchers(HttpMethod.POST, "/api/products").hasAnyAuthority("Admin", "Manager", "Warehouseman", "Printer")
