@@ -96,6 +96,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/generate-task-report").hasAnyAuthority("Admin", "Manager")
                 .antMatchers(HttpMethod.GET, "/api/generate-task-report/{id}").hasAnyAuthority("Admin", "Manager")
 
+                .antMatchers("/api/users/{id}/join/tasks/{id}").permitAll()
+
+                .antMatchers(HttpMethod.GET, "/api/roles").hasAnyAuthority("Admin", "Manager")
+
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtTokenConfigurer(jwtTokenProvider));
