@@ -111,4 +111,10 @@ public class UserService {
     public List<Role> getAllRoles() {
         return roleRepository.findAll();
     }
+
+    // Get User by ID
+    public UserResponseWithoutTasksDTO getById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User Not Found"));
+        return userMapper.entityToDtoWithoutTasks(user);
+    }
 }

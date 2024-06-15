@@ -2,8 +2,10 @@ package com.pink.itms.controller;
 
 import com.pink.itms.dto.login.LoginRequestDTO;
 import com.pink.itms.dto.login.LoginResponseDTO;
+import com.pink.itms.exception.user.UserNotFoundException;
 import com.pink.itms.jwt.JwtTokenProvider;
 import com.pink.itms.model.User;
+import com.pink.itms.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,15 +28,18 @@ import javax.servlet.http.HttpServletResponse;
 public class LoginController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
+
     /**
      * Constructor for LoginController.
      *
      * @param authenticationManager the AuthenticationManager instance for authentication.
      * @param jwtTokenProvider      the JwtTokenProvider instance for generating JWT tokens.
      */
-    public LoginController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
+    public LoginController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserRepository userRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -51,7 +56,8 @@ public class LoginController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        UserDetails user = (UserDetails)authentication.getPrincipal();
+        UserDetails user = (UserDetails) authentication.getPrincipal();
+        User userD = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow(() -> new UserNotFoundException("User with username " + loginRequest.getUsername() + " doesn't exist."));
 
         String jwt = jwtTokenProvider.generateToken(authentication);
 
@@ -64,6 +70,6 @@ public class LoginController {
         response.addCookie(jwtCookie);
 
 
-        return ResponseEntity.ok(new LoginResponseDTO(jwt, user.getUsername(), user.getAuthorities()));
+        return ResponseEntity.ok(new LoginResponseDTO(userD.getId(), jwt, user.getUsername(), user.getAuthorities()));
     }
 }

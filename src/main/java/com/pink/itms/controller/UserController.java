@@ -57,6 +57,24 @@ public class UserController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponseWithoutTasksDTO> getById(@PathVariable long id, HttpServletRequest request) {
+        String token = jwtTokenProvider.resolveToken(request);
+
+        if (token != null && jwtTokenProvider.validateToken(token)) {
+            try {
+                UserResponseWithoutTasksDTO userDTO = userService.getById(id);
+                return ResponseEntity.ok(userDTO);
+            } catch (Exception e) {
+                return ResponseEntity.notFound().build();
+            }
+        } else if (token == null || !jwtTokenProvider.validateToken(token)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
+
     @GetMapping("")
     public ResponseEntity<List<UserResponseWithoutTasksDTO>> getAll(HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
