@@ -25,6 +25,7 @@ public class TaskController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    //TODO: Make sure that tasks creates with state 0
     @PostMapping
     public ResponseEntity<?> createTask(@RequestBody TaskRequestDTO taskRequestDTO, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
@@ -160,7 +161,9 @@ public class TaskController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
     }
-
+    /*
+    TODO: add verification if task is assigned for given user, now it's only checks if user has correct role for that task's state
+     */
     @PostMapping("/{taskId}/finished")
     public ResponseEntity<?> nextStage(@PathVariable Long taskId, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
@@ -193,6 +196,9 @@ public class TaskController {
         }
     }
 
+    /*
+        it's diffrent from /user/{userId}, because it's returns only tasks that's in correct state for that user
+     */
     @GetMapping("/user/{userName}/assigned")
     public ResponseEntity<?> getAssignedForUser(@PathVariable String userName, HttpServletRequest request){
         String token = jwtTokenProvider.resolveToken(request);
