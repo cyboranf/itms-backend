@@ -34,7 +34,7 @@ public class RegisterValidator {
      */
     public void registerValidation(RegisterRequestDTO registerRequestDTO) {
         // Check if the username already exists
-        if (userRepository.findByUsername(registerRequestDTO.getUsername()).isPresent()) {
+        if (userRepository.findByUsername(registerRequestDTO.getUsername()).isPresent() && userRepository.findByUsername(registerRequestDTO.getUsername()).get().getIsActive()) {
             throw new ExistingUsernameException("Account with username: " + registerRequestDTO.getUsername() + " already exists.");
         }
         // Check if the username meets length requirements
@@ -53,7 +53,7 @@ public class RegisterValidator {
         if (!EMAIL_PATTERN.matcher(registerRequestDTO.getEmail()).matches()) {
             throw new InvalidEmailException("Email does not follow a valid format.");
         }
-        if (userRepository.findByEmail(registerRequestDTO.getEmail()).isPresent()) {
+        if (userRepository.findByEmail(registerRequestDTO.getEmail()).isPresent() && userRepository.findByEmail(registerRequestDTO.getEmail()).get().getIsActive()) {
             throw new ExistingEmailException("Account with email: " + registerRequestDTO.getEmail() + " already exists.");
         }
     }
