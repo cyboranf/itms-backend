@@ -2,6 +2,7 @@ package com.pink.itms.controller;
 
 import com.pink.itms.dto.task.TaskRequestDTO;
 import com.pink.itms.dto.task.TaskResponseDTO;
+import com.pink.itms.exception.task.TaskNotFoundException;
 import com.pink.itms.jwt.JwtTokenProvider;
 import com.pink.itms.service.TaskService;
 import org.springframework.http.HttpStatus;
@@ -152,6 +153,23 @@ public class TaskController {
 
         if (token != null && jwtTokenProvider.validateToken(token)) {
             return ResponseEntity.ok(taskService.getAllTasksByUserId(userId));
+        } else if (token == null || !jwtTokenProvider.validateToken(token)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @PostMapping("/{taskId}/finished")
+    public ResponseEntity<?> nextStage(@PathVariable Long taskId, HttpServletRequest request) {
+        String token = jwtTokenProvider.resolveToken(request);
+
+        if (token != null && jwtTokenProvider.validateToken(token)) {
+            try {
+                return ResponseEntity.ok(taskService.nextStage(taskId));
+            } catch (TaskNotFoundException e) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
+            }
         } else if (token == null || !jwtTokenProvider.validateToken(token)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {

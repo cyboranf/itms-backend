@@ -8,6 +8,7 @@ import com.pink.itms.exception.warehouse.WarehouseNotFoundException;
 import com.pink.itms.mapper.TaskMapper;
 import com.pink.itms.model.Product;
 import com.pink.itms.model.Task;
+import com.pink.itms.model.TaskType;
 import com.pink.itms.model.Warehouse;
 import com.pink.itms.repository.ProductRepository;
 import com.pink.itms.repository.TaskRepository;
@@ -30,6 +31,20 @@ public class TaskService {
     private final TaskMapper taskMapper;
     private final ProductRepository productRepository;
     private final WarehouseRepository warehouseRepository;
+    /*
+    1 - admin i manager
+    2 - warehouseman
+    3 - printer
+     */
+    private final int[][] taskState = {
+            {2, 1},
+            {2, 1},
+            {2, 1},
+            {2, 3, 2, 1},
+            {1},
+            {1},
+            {1}
+    };
 
     public TaskService(TaskRepository taskRepository, TaskValidator taskValidator, TaskMapper taskMapper, ProductRepository productRepository, WarehouseRepository warehouseRepository) {
         this.taskRepository = taskRepository;
@@ -160,5 +175,25 @@ public class TaskService {
         return tasks.stream()
                 .map(taskMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Changes task state to next, if state is already on last state, or state is on -1 then returns with -1
+     *
+     * @param taskId id of task to be changed
+     * @return {@link TaskResponseDTO} - id of task to be changed
+     */
+    public TaskResponseDTO nextStage(Long taskId) {
+        Task task = taskRepository.findById(taskId).orElseThrow(() -> new TaskNotFoundException("Task Not Found!"));
+        TaskType type = task.getType();
+        int state = (task.getState() + 1);
+
+        if (state >= taskState[type.getId().intValue()].length || state == 0) {
+            task.setState(-1);
+        } else {task.setState(state);
+        }
+
+        taskRepository.save(task);
+        return taskMapper.toDto(task);
     }
 }
