@@ -2,6 +2,7 @@ package com.pink.itms.controller;
 
 import com.pink.itms.dto.task.TaskRequestDTO;
 import com.pink.itms.dto.task.TaskResponseDTO;
+import com.pink.itms.exception.task.TaskNotFoundException;
 import com.pink.itms.jwt.JwtTokenProvider;
 import com.pink.itms.service.TaskService;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -23,6 +25,7 @@ public class TaskController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    //TODO: Make sure that tasks creates with state 0
     @PostMapping
     public ResponseEntity<?> createTask(@RequestBody TaskRequestDTO taskRequestDTO, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
@@ -158,5 +161,56 @@ public class TaskController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
     }
+    /*
+    TODO: add verification if task is assigned for given user, now it's only checks if user has correct role for that task's state
+     */
+    @PostMapping("/{taskId}/finished")
+    public ResponseEntity<?> nextStage(@PathVariable Long taskId, HttpServletRequest request) {
+        String token = jwtTokenProvider.resolveToken(request);
+
+        System.out.println(jwtTokenProvider.getAuthentication(token).getAuthorities().toArray()[0]);
+
+        if (token != null && jwtTokenProvider.validateToken(token)) {
+            try {
+                return ResponseEntity.ok(taskService.nextStage(taskId, jwtTokenProvider.getAuthentication(token).getAuthorities().toArray()[0].toString()));
+            } catch (TaskNotFoundException e) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
+            }
+        } else if (token == null || !jwtTokenProvider.validateToken(token)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @GetMapping("/self/assigned")
+    public ResponseEntity<?> getAssignedForSelf(HttpServletRequest request){
+        String token = jwtTokenProvider.resolveToken(request);
+
+        if (token != null && jwtTokenProvider.validateToken(token)) {
+           return  ResponseEntity.ok(taskService.getAssignedForSelf(jwtTokenProvider.getAuthentication(token).getName()));
+        } else if (token == null || !jwtTokenProvider.validateToken(token)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
+
+    /*
+        it's diffrent from /user/{userId}, because it's returns only tasks that's in correct state for that user
+     */
+    @GetMapping("/user/{userName}/assigned")
+    public ResponseEntity<?> getAssignedForUser(@PathVariable String userName, HttpServletRequest request){
+        String token = jwtTokenProvider.resolveToken(request);
+
+        if (token != null && jwtTokenProvider.validateToken(token)) {
+            return  ResponseEntity.ok(taskService.getAssignedForSelf(userName));
+        } else if (token == null || !jwtTokenProvider.validateToken(token)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
+
 
 }
