@@ -24,6 +24,7 @@ public class UserController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
     //TODO: Napisać edit dla admina (Różni sie od tego ponizej tym, że mozna tez role zmieniac)
+
     @PutMapping("/edit/{userId}")
     public ResponseEntity<UserResponseDTO> editUser(@PathVariable Long userId, @RequestBody UserRequestDTO userRequestDTO, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
@@ -77,7 +78,7 @@ public class UserController {
         if (token != null && jwtTokenProvider.validateToken(token)) {
             try {
                 userService.attachTask(userId, taskId);
-            } catch(RuntimeException e) {
+            } catch (RuntimeException e) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
             }
 
@@ -96,6 +97,41 @@ public class UserController {
         if (token != null && jwtTokenProvider.validateToken(token)) {
             UserResponseWithoutTasksDTO responseDTO = userService.getSelf(jwtTokenProvider.getUsername(token));
             return ResponseEntity.ok(responseDTO);
+        } else if (token == null || !jwtTokenProvider.validateToken(token)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
+
+    // Give role for user - only for admin
+    @PutMapping("/role/{userId}")
+    public ResponseEntity<?> giveRole(@PathVariable Long userId, @RequestParam String role, HttpServletRequest request) {
+        String token = jwtTokenProvider.resolveToken(request);
+
+        if (token != null && jwtTokenProvider.validateToken(token)) {
+            try {
+                userService.giveRole(userId, role);
+            } catch (RuntimeException e) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            }
+
+            return ResponseEntity.ok("Role given");
+        } else if (token == null || !jwtTokenProvider.validateToken(token)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
+
+    // Get All Users with role 'User'
+    @GetMapping("/users-with-role-user")
+    public ResponseEntity<List<UserResponseWithoutTasksDTO>> getAllUsers(HttpServletRequest request) {
+        String token = jwtTokenProvider.resolveToken(request);
+
+        if (token != null && jwtTokenProvider.validateToken(token)) {
+            List<UserResponseWithoutTasksDTO> responseDTOList = userService.getAllUsersWithUserRole();
+            return ResponseEntity.ok(responseDTOList);
         } else if (token == null || !jwtTokenProvider.validateToken(token)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {

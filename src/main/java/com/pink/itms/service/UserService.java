@@ -7,9 +7,11 @@ import com.pink.itms.exception.task.TaskNotFoundException;
 import com.pink.itms.exception.user.UserNotFoundException;
 import com.pink.itms.exception.warehouse.WarehouseNotFoundException;
 import com.pink.itms.mapper.UserMapper;
+import com.pink.itms.model.Role;
 import com.pink.itms.model.Task;
 import com.pink.itms.model.User;
 import com.pink.itms.model.Warehouse;
+import com.pink.itms.repository.RoleRepository;
 import com.pink.itms.repository.TaskRepository;
 import com.pink.itms.repository.UserRepository;
 import com.pink.itms.validation.UserValidator;
@@ -26,12 +28,14 @@ public class UserService {
     private final UserMapper userMapper;
     private final UserValidator userValidator;
     private final TaskRepository taskRepository;
+    private final RoleRepository roleRepository;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper, UserValidator userValidator, TaskRepository taskRepository) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, UserValidator userValidator, TaskRepository taskRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.userValidator = userValidator;
         this.taskRepository = taskRepository;
+        this.roleRepository = roleRepository;
     }
 
     public UserResponseDTO editUser(Long userId, UserRequestDTO dto) {
@@ -85,5 +89,21 @@ public class UserService {
     public UserResponseWithoutTasksDTO getSelf(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
         return userMapper.entityToDtoWithoutTasks(user);
+    }
+
+    // give role to User
+    public void giveRole(Long userId, String role) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User Not Found"));
+        Role newRole = roleRepository.findByName(role);
+        user.getRoles().add(newRole);
+        userRepository.save(user);
+    }
+
+    // Get All Users with role 'User'
+    public List<UserResponseWithoutTasksDTO> getAllUsersWithUserRole() {
+        return userRepository.findAllByRolesName("User")
+                .stream()
+                .map(userMapper::entityToDtoWithoutTasks)
+                .toList();
     }
 }
