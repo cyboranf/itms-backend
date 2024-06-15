@@ -1,8 +1,11 @@
 package com.pink.itms.mapper;
 
+import com.pink.itms.config.security.AesCbcCrypt;
 import com.pink.itms.dto.user.UserRequestDTO;
 import com.pink.itms.dto.user.UserResponseDTO;
 import com.pink.itms.dto.user.UserResponseWithoutTasksDTO;
+import com.pink.itms.exception.aes.CipherDefectedException;
+import com.pink.itms.exception.aes.InvalidKeyLengthException;
 import com.pink.itms.exception.user.UserNotFoundException;
 import com.pink.itms.model.Role;
 import com.pink.itms.model.User;
@@ -11,6 +14,10 @@ import com.pink.itms.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -18,9 +25,11 @@ import java.util.stream.Collectors;
 @Component
 public class UserMapper {
     private final UserRepository userRepository;
+    private final AesCbcCrypt crypt;
 
-    public UserMapper(UserRepository userRepository) {
+    public UserMapper(UserRepository userRepository, AesCbcCrypt crypt) {
         this.userRepository = userRepository;
+        this.crypt = crypt;
     }
 
     public static Set<pdf.generator.model.User> toPdfUserSet(Set<UserResponseWithoutTasksDTO> users) {
@@ -52,7 +61,13 @@ public class UserMapper {
         userResponseWithoutTasksDTO.setUsername(user.getUsername());
         userResponseWithoutTasksDTO.setName(user.getName());
         userResponseWithoutTasksDTO.setLastname(user.getLastname());
-        userResponseWithoutTasksDTO.setPesel(user.getPesel());
+        try {
+            userResponseWithoutTasksDTO.setPesel(crypt.decrypt(user.getPesel()));
+        } catch (InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
+            throw new CipherDefectedException("Error: PESEL cipher has ben defected.");
+        } catch (InvalidKeyException e) {
+            throw new InvalidKeyLengthException("Error: AES encryption key length is invalid. Expected 16-Byte key");
+        }
         userResponseWithoutTasksDTO.setEmail(user.getEmail());
         userResponseWithoutTasksDTO.setPhoneNumber(user.getPhoneNumber());
         userResponseWithoutTasksDTO.setIsActive(user.getIsActive());

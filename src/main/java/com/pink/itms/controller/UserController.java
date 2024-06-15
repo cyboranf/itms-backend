@@ -24,7 +24,6 @@ public class UserController {
         this.userService = userService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
-    //TODO: Napisać edit dla admina (Różni sie od tego ponizej tym, że mozna tez role zmieniac)
 
     @PutMapping("/edit/{userId}")
     public ResponseEntity<UserResponseDTO> editUser(@PathVariable Long userId, @RequestBody UserRequestDTO userRequestDTO, HttpServletRequest request) {
