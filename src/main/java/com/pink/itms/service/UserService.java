@@ -101,7 +101,7 @@ public class UserService {
 
     // Get All Users with role 'User'
     public List<UserResponseWithoutTasksDTO> getAllUsersWithUserRole() {
-        return userRepository.findAllByRolesName("User")
+        return userRepository.findAllByRolesNameAndIsActiveTrue("User")
                 .stream()
                 .map(userMapper::entityToDtoWithoutTasks)
                 .toList();
