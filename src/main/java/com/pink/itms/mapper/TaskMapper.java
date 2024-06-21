@@ -5,7 +5,10 @@ import com.pink.itms.dto.task.TaskRequestDTO;
 import com.pink.itms.dto.task.TaskResponseDTO;
 import com.pink.itms.dto.user.UserResponseWithoutTasksDTO;
 import com.pink.itms.dto.warehouse.WarehouseResponseDTO;
+import com.pink.itms.exception.taskType.TaskTypeNotFoundException;
 import com.pink.itms.model.Task;
+import com.pink.itms.model.TaskType;
+import com.pink.itms.repository.TaskTypeRepository;
 import org.springframework.stereotype.Component;
 import pdf.generator.model.Tasks;
 
@@ -17,11 +20,13 @@ public class TaskMapper {
     private final UserMapper userMapper;
     private final ProductMapper productMapper;
     private final WarehouseMapper warehouseMapper;
+    private final TaskTypeRepository taskTypeRepository;
 
-    public TaskMapper(UserMapper userMapper, ProductMapper productMapper, WarehouseMapper warehouseMapper) {
+    public TaskMapper(UserMapper userMapper, ProductMapper productMapper, WarehouseMapper warehouseMapper, TaskTypeRepository taskTypeRepository) {
         this.userMapper = userMapper;
         this.productMapper = productMapper;
         this.warehouseMapper = warehouseMapper;
+        this.taskTypeRepository = taskTypeRepository;
     }
 
     public Task toEntity(TaskRequestDTO taskRequestDTO) {
@@ -29,8 +34,11 @@ public class TaskMapper {
         task.setId(taskRequestDTO.getId());
         task.setName(taskRequestDTO.getName());
         task.setDescription(taskRequestDTO.getDescription());
-        task.setState(taskRequestDTO.getState());
+        task.setState(0);
         task.setPriority(taskRequestDTO.getPriority());
+        task.setType(taskTypeRepository.findById(taskRequestDTO.getType_id()).orElseThrow(() -> new TaskTypeNotFoundException("task type not found!")));
+        if (taskRequestDTO.getStartDate() != null) task.setStartDate(taskRequestDTO.getStartDate());
+        if (taskRequestDTO.getEndDate() != null) task.setEndDate(taskRequestDTO.getEndDate());
         task.setIsActive(true);
 
         return task;

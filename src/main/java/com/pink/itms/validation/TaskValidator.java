@@ -33,10 +33,6 @@ public class TaskValidator {
             throw new InvalidTaskDescriptionException("Task description must not be empty");
         }
 
-        if (taskRequestDTO.getState() <= 0) {
-            throw new InvalidTaskStateException("Task state must be a positive integer");
-        }
-
         if (taskRequestDTO.getPriority() <= 0) {
             throw new InvalidTaskPriorityException("Task priority must be a positive integer");
         }
