@@ -48,6 +48,7 @@ public class TaskService {
         3 - printer
      */
     private final int[][] taskState = {
+            {1},
             {2, 1},
             {2, 1},
             {2, 1},
