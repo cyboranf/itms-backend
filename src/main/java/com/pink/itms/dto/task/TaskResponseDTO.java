@@ -14,6 +14,7 @@ public class TaskResponseDTO {
     private String description;
     private Integer state;
     private Integer priority;
+    private String type;
     private LocalDateTime creationDate;
     private LocalDateTime startDate;
     private LocalDateTime endDate;

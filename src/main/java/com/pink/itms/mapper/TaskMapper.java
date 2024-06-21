@@ -56,6 +56,9 @@ public class TaskMapper {
         responseDTO.setEndDate(task.getEndDate());
         responseDTO.setIsActive(task.getIsActive());
 
+        if (task.getType() == null) responseDTO.setType("None");
+        else responseDTO.setType(task.getType().getName());
+
         if (task.getUsers() != null) {
             responseDTO.setUsers(task.getUsers().stream()
                     .map(userMapper::entityToDtoWithoutTasks)
