@@ -55,11 +55,11 @@ INSERT INTO type (id, name, is_active) VALUES
 INSERT INTO task (id, name, description, state, priority, type_id, creation_date, start_date, end_date, is_active) VALUES
 (1, 'Prepare products for shipment', 'prepare products attached to this task and deliver them to gate B', 0, 5, 2, '2024-01-14 10:10:00 ', NULL, NULL, TRUE),
 (2, 'Move products', 'move products from between two spaces attached to this task', 0, 4, 3, '2024-01-10 10:09:00', NULL, NULL, TRUE),
-(3, 'Prepare products for shipment', 'prepare products attached to this task and deliver them to gate A', 1, 6, 2, '2024-01-09 10:12:00', '2024-01-10 09:10:00', NULL, TRUE),
-(4, 'Unload transport', 'Unload transport from gate C to spot attached to this task', 2, 10, 1, '2024-01-01 08:00:00', '2024-01-01 08:01:00', '2024-01-01 09:01:00', TRUE),
+(3, 'Prepare products for shipment', 'prepare products attached to this task and deliver them to gate A', 0, 6, 2, '2024-01-09 10:12:00', '2024-01-10 09:10:00', NULL, TRUE),
+(4, 'Unload transport', 'Unload transport from gate C to spot attached to this task', 0, 10, 1, '2024-01-01 08:00:00', '2024-01-01 08:01:00', '2024-01-01 09:01:00', TRUE),
 (5, 'Print T-shirts pattern', 'Print flower pattern on products from space attached to this task', 0, 3, 4, '2024-01-14 10:09:00', NULL, NULL, TRUE),
-(6, 'Print T-shirts pattern', 'Print flame pattern on T-shirts from space attached to this task', 1, 5, 4, '2024-01-10 10:08:00', '2024-01-11 08:08:00', NULL, TRUE),
-(7, 'Print T-Shirts pattern', 'Print water pattern on T-shirts from space attached to this task', 2, 7, 4, '2024-01-08 08:08:00','2024-01-09 09:08:00', '2024-01-10 10:09:08', TRUE),
+(6, 'Print T-shirts pattern', 'Print flame pattern on T-shirts from space attached to this task', 0, 5, 4, '2024-01-10 10:08:00', '2024-01-11 08:08:00', NULL, TRUE),
+(7, 'Print T-Shirts pattern', 'Print water pattern on T-shirts from space attached to this task', 0, 7, 4, '2024-01-08 08:08:00','2024-01-09 09:08:00', '2024-01-10 10:09:08', TRUE),
 (8, 'Remove user', 'Remove user Jkowalski', 0, 10, 6, '2024-02-01 08:08:08', NULL, NULL, TRUE),
 (9, 'Order T-shirts', 'Order T-shirts, size XXL, black color, quantity: 300 from Ebay', 0, 10, 5, '2024-01-08 10:21:00', NULL, NULL, TRUE);
 

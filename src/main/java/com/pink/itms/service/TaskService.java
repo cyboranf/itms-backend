@@ -66,6 +66,7 @@ public class TaskService {
      */
     private boolean isAuthorised(String role, Task task) {
         if (role.equals("Admin") || role.equals("Manager")) return true;
+        if (task.getState() == -1) return false;
 
         int state = taskState[task.getType().getId().intValue()][task.getState()];
         switch (state) {
@@ -238,6 +239,7 @@ public class TaskService {
         List<TaskResponseDTO> responseList = new ArrayList<>();
         String role = user.getRoles().stream().toList().get(0).getName();
         List<Task> taskList = taskSet.stream().toList();
+
 
         for (int i = 0; i < taskSet.size(); i++) {
             if (isAuthorised(role, taskList.get(i))) responseList.add(taskMapper.toDto(taskList.get(i)));
