@@ -58,7 +58,7 @@ public class ProductController {
         }
     }
 
-    @PutMapping("/products/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> editProduct(@PathVariable long id, @RequestBody ProductRequestDTO requestDTO, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
