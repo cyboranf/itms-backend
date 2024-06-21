@@ -67,7 +67,8 @@ public class TaskService {
     private boolean isAuthorised(String role, Task task) {
         if (role.equals("Admin") || role.equals("Manager")) return true;
 
-        switch (task.getState()) {
+        int state = taskState[task.getType().getId().intValue()][task.getState()];
+        switch (state) {
             case 2:
                 if (role.equals("Warehouseman")) return true;
                 break;
