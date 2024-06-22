@@ -97,7 +97,7 @@ public class UserMapper {
 
     public void updateUserFromRequestDTO(UserRequestDTO dto, User user) {
         User tempUser = new User();
-        BeanUtils.copyProperties(dto, tempUser, "id", "password");
+        BeanUtils.copyProperties(dto, tempUser, "id", "password", "roles");
         try {
             String encryptedPesel = crypt.encrypt(dto.getPesel());
             tempUser.setPesel(encryptedPesel);
@@ -106,6 +106,6 @@ public class UserMapper {
         } catch (InvalidKeyException e) {
             throw new InvalidKeyLengthException("Error: AES encryption key length is invalid. Expected 16-Byte key");
         }
-        BeanUtils.copyProperties(tempUser, user, "id", "password");
+        BeanUtils.copyProperties(tempUser, user, "id", "password", "roles");
     }
 }
