@@ -60,7 +60,7 @@ public class PdfController {
             HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
+        if (token != null && jwtTokenProvider.validateToken(token)) {
             List<UserResponseWithoutTasksDTO> users = userService.getAll();
 
             // Filtering
@@ -146,7 +146,6 @@ public class PdfController {
 
     @GetMapping("/generate-task-report")
     public ResponseEntity<InputStreamResource> generateTaskReport(
-            @RequestParam(value = "state", required = false) Integer state,
             @RequestParam(value = "priority", required = false) Integer priority,
             @RequestParam(value = "userId", required = false) Long userId,
             @RequestParam(value = "taskId", required = false) Long taskId,
@@ -156,26 +155,30 @@ public class PdfController {
             @RequestParam(value = "includePieChart", required = false, defaultValue = "false") boolean includePieChart,
             HttpServletRequest request) {
 
-        String token = jwtTokenProvider.resolveToken(request);
+            String token = jwtTokenProvider.resolveToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token) && jwtTokenProvider.getAuthentication(token).getAuthorities().contains(new SimpleGrantedAuthority("Admin"))) {
-            List<TaskResponseDTO> tasks = taskService.getFilteredTasks(state, priority, userId, taskId);
-            List<Tasks> pdfTasks = TaskMapper.toPdfTaskList(tasks);
+            if (token != null && jwtTokenProvider.validateToken(token)) {
 
-            ByteArrayInputStream bis = pdfReportGenerator.generateTaskReport(pdfTasks, includeUsers, includeProducts, includeWarehouses, includePieChart);
+                List<TaskResponseDTO> tasks = taskService.getFilteredTasks(priority, userId, taskId);
+                List<Tasks> pdfTasks = TaskMapper.toPdfTaskList(tasks);
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-Disposition", "inline; filename=task-report.pdf");
+                ByteArrayInputStream bis = pdfReportGenerator.generateTaskReport(pdfTasks, includeUsers, includeProducts, includeWarehouses, includePieChart);
 
-            return ResponseEntity
-                    .ok()
-                    .headers(headers)
-                    .contentType(MediaType.APPLICATION_PDF)
-                    .body(new InputStreamResource(bis));
-        } else if (token == null || !jwtTokenProvider.validateToken(token)) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        } else {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+                System.out.println("Number of tasks retrieved: " + tasks.size());
+
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("Content-Disposition", "inline; filename=task-report.pdf");
+
+                return ResponseEntity
+                        .ok()
+                        .headers(headers)
+                        .contentType(MediaType.APPLICATION_PDF)
+                        .body(new InputStreamResource(bis));
+            }else if (token == null || !jwtTokenProvider.validateToken(token)) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            } else {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
     }
 }

@@ -46,6 +46,14 @@ public class TaskService {
         1 - admin i manager
         2 - warehouseman
         3 - printer
+
+        Import admin -> warehouseman -> admin
+        Shipment admin -> warehouseman -> admin
+        Move admin -> warehouseman -> admin
+        Print admin -> warehouseman -> printer -> warehouseman -> admin
+        Order product -> admin
+        Administrative changes -> admin
+
      */
     private final int[][] taskState = {
             {1},
@@ -116,14 +124,10 @@ public class TaskService {
                 .toList();
     }
 
-    public List<TaskResponseDTO> getFilteredTasks(Integer state, Integer priority, Long userId, Long taskId) {
+    public List<TaskResponseDTO> getFilteredTasks( Integer priority, Long userId, Long taskId) {
         List<Task> tasks = taskRepository.findAll();
+        System.out.println(tasks);
 
-        if (state != null) {
-            tasks = tasks.stream()
-                    .filter(task -> task.getState().equals(state))
-                    .collect(Collectors.toList());
-        }
         if (priority != null) {
             tasks = tasks.stream()
                     .filter(task -> task.getPriority().equals(priority))

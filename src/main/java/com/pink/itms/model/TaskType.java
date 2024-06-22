@@ -16,4 +16,12 @@ public class TaskType {
     private Boolean isActive = true;
     @OneToMany(mappedBy = "type")
     private Set<Task> tasks;
+
+    @Override
+    public String toString() {
+        return "TaskType{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

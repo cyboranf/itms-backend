@@ -92,6 +92,7 @@ public class TaskMapper {
         task.setEndDate(taskDTO.getEndDate());
         task.setActive(taskDTO.getIsActive());
 
+
         task.setUsers(UserMapper.toPdfUserSet(taskDTO.getUsers()));
         task.setProducts(ProductMapper.toPdfProductSet(taskDTO.getProducts()));
         task.setWarehouses(WarehouseMapper.toPdfWarehouseSet(taskDTO.getWarehouses()));

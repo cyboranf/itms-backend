@@ -60,4 +60,20 @@ public class Task {
         Task task = (Task) o;
         return Objects.equals(id, task.id);
     }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", state=" + state +
+                ", priority=" + priority +
+                ", type=" + (type != null ? type.getId() : null) +  // Avoiding infinite loop by only including the ID
+                ", creationDate=" + creationDate +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", isActive=" + isActive +
+                '}';
+    }
 }
